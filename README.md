@@ -3,7 +3,7 @@
 <!-- ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=for-the-badge) -->
 ![GitHub issues](https://img.shields.io/github/issues-raw/jeblad/ModDoc?style=for-the-badge)
 
-***NOTE***: *This is only in the preparation.*
+ ***NOTE***: *This is only in the preparation. The goal is to reimplement [Module:Luadoc](https://en.wikipedia.org/wiki/Module:LuaDoc) and generalize it for more languages than just Lua.*
 
 This [extension for Mediawiki](https://www.mediawiki.org/wiki/Extension:ModDoc) add formalized documentation to modules provided by the [Scribunto extension](https://www.mediawiki.org/wiki/Extension:Scribunto). This makes it possible to verify existence of sufficient documentation, to facilitate easy reuse in a collaborative environment.
 
