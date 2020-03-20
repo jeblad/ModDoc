@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jeblad"
+		]
+	},
+	"moddoc-desc": "Provides LuaDoc-style documentation for modules"
+}
