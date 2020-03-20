@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ModDoc documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ModDoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Usage">Usage </a></li>
+<li><a href="#External_links">External links </a></li>
+</ul>
+
+
+<h2>Topics</h2>
+<ul class="">
+  <li><strong>Introduction</strong></li>
+  <li><a href="../topics/vagrant.md.html">Vagrant</a></li>
+  <li><a href="../topics/vscode.md.html">VScode</a></li>
+  <li><a href="../topics/CONTRIBUTING.md.html">Contributing</a></li>
+  <li><a href="../topics/CODE_OF_CONDUCT.md.html">Code of Conduct</a></li>
+  <li><a href="../topics/SECURITY.md.html">Security</a></li>
+  <li><a href="../topics/TRANSLATING.md.html">Translating</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../index.html">moddoc</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/tiny.lua.html">tiny.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+<h1>Introduction</h1>
+
+<p><a name="Usage"></a></p>
+<h2>Usage</h2>
+<p>Usual call for documentation of a single module, like a replacement for the usual documentation page, would be like this</p>
+
+
+<pre>
+{{#invoke:LuaDoc|build|{{FULLPAGENAME}}}}
+</pre>
+
+<p>In the actual code there will be specially formatted comments. All comments acted upon by this use a single line comment followed by an at sign (@) and a tag name. (Is there any reason why we should use other kinds of comments? They are useful for commenting out blocks? How to describe local functions? Should inline docs be used, those can be supported by wikitext?)</p>
+
+<p>Note that all text is processed as wikitext, and it is possible to link internally and externally as seems fit. This also creates some problems as part of the text will have spaces or page breaks in odd places.</p>
+
+<p>A summary-line is prefixed by <em>three</em> (3) hyphens (dashes), and double as a marker for the place where the code is to be divided into chunks. The stuff in each chunk is processed separately. The summary will be marked as such, and it will be possible to use it as a fragment identifier.</p>
+
+<p>A tag is prefixed by <em>two</em> (2) hyphens (dashes), optional spaces, a single at-sign (@) and a tag name. The following text can be further split and given special markup.</p>
+
+<p>A single line comment following a summary or tag will be joined with the preceding line. If the line contains text it will be joined with a dividing space, if it is empty it will add a newline. The newline can be further processed and given special markup.</p>
+
+<p>Recognized tags can be removed from the document flow or left in place, as seems fit for the processed chunk of text. Those removed from the document can be added to separate lists for separate processing or rejected altogether.</p>
+
+<p>Unrecognized tags will be rendered in place with a generic mechanism.</p>
+
+<p>All tags with a leading <code>x-</code> will be rejected, no matter if they can be recognized or not.</p>
+
+<h3>Available tags</h3>
+<p>A series of different tags are recognized. They capture words or other constructs, and will process the captures specially. The captures will be formatted and linked as necessary. The remaining text is treated as ordinary wikitext.</p>
+
+<p>If a tag taking captures fails to detect a capture, then possible captures will be successively pushed out, ultimately pushing all possible captures into the following text. This can be used in some cases to avoid using a specific capture, but is an indication that the documentation is broken.</p>
+
+<p>It is the intention to support the listed tags, but others can be added later. The block tags from JSdoc could be a source for additional entries.<a href="http://usejsdoc.org/#block-tags">JSDoc: Block Tags</a></p>
+
+<ul>
+    <li><p>@author<sup>*</sup> – Identify the author of an item. Authors are those that have contributed with content to the item.</p></li>
+    <li><p>@copyright<sup>*</sup> – Document some copyright information. Copyright is an identification of the entity that is allowed to set the license.</p></li>
+    <li><p>@license<sup>*</sup> – Identify the license that applies to this code. The license is the document that says why a module can be reused.</p></li>
+    <li><p>@provenance<sup>*</sup> – Document the history of ownership for the module. Link this to the external source if suitable.</p></li>
+    <li><p>@release<sup>?</sup> (alt @version) – Identify the release or version number of an item. This is necessary for imported modules.</p></li>
+    <li><p>@since<sup>?</sup> [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was added. The date, version, or revision when some functionality was added.</p></li>
+    <li><p>@deprecated<sup>?</sup> [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was deprecated. The date, version, or revision are when functionality become deprecated.</p></li>
+    <li><p>@var<sup>?</sup> [_word<em>|</em>descriptor_] – Describe a variable definition. First field is a type declaration. This implies a variable-class. (Not sure about this one, its like the signature of the function.)</p></li>
+    <li><p>@field<sup>*</sup> [_word<em>|</em>descriptor_] – Describe a table field definition. First field is a type declaration. This implies a variable-class.</p></li>
+    <li><p>@param<sup>*</sup> [_word<em>|</em>descriptor_] (alt @arg, @argument) – Document the parameter to a function. First field is a type declaration. This implies a function-class.</p></li>
+    <li><p>@returns<sup>*</sup> (alt @return) – Document the return values of a function. Since Lua can return multiple values, this tag could appear more than once. This implies a function-class.</p></li>
+    <li><p>@see<sup>*</sup> – Refer to some other documentation for more information. This tag spawns an entry possibly with links in a navigation box.</p></li>
+    <li><p>@usage &lt;<em>text</em>> – Describe the usage of the function or variable. This is one of several such free sections. The tag will be localized as necessary. (Not sure about this one, perhaps name the individual modifiers.)</p></li>
+    <li><p><sup>*</sup> Zero or more entries</p></li>
+    <li><p><sup>+</sup> One or more entries</p></li>
+    <li><p><sup>?</sup> Zero or one entry</p></li>
+</ul>
+
+<h3>Inferred tags</h3>
+<p>Some tags will be extracted from the following block of code if missing (it is the intention to support these)
+* @class &lt;<em>word</em>> – The first documentation block will be assumed to be of class module, and later ones will have classes inferred from the code block unless it is specified explicitly.
+* @description &lt;<em>text</em>> – The description is the documentation following the summary, but can be set explicitly. (Not sure if this should be described here, and if it should have a tag.)
+* @name &lt;<em>word</em>> – The name of the function or table definition. This is usually inferred from simple code analysis, and the programmer does not need to define it. (The programmer should not add it at all.)
+* @access &lt;<em>word</em>> – Whether the function or variable is public or private. This will be error prone if inferred from the code.
+* @signature &lt;<em>line</em>> – A signature inferred from a single line of code. </p>
+
+<h3>Additional comments</h3>
+<p>There are available block comments in Lua, and they can also be used in code documented with LuaDoc. The commented blocks will be removed before further processing, making the resulting documentation stripped down to the bare running code.</p>
+
+<p>In Lua a block comment starts like <code>--[[</code> and run until the corresponding <code>]]</code>. Actually, if we add an additional leading hyphen then the comment will be turned into a single line comment. That leads to a situation whereby the following code can comment out a piece of code</p>
+
+
+<pre>
+<span class="comment">--[[
+print(10)         -- no action (comment)
+--]]</span>
+</pre>
+
+<p>Now, if we add a single hyphen to the first line, the code is in again:</p>
+
+
+<pre>
+<span class="comment">---[[
+</span><span class="global">print</span>(<span class="number">10</span>)         <span class="comment">-- 10
+</span><span class="comment">--]]</span>
+</pre>
+
+<p>To formalize this a little we will say that LuaDoc only act upon comments that are on a line by themselves. Other block comments are simply left as they are.</p>
+
+<p>Block comments can be specified a bit more, leading to nested comments. The regex we are using for block comments is like <code>\n%s<em>--%b<a href="=*"></a>&amp;[].</em>]\1]</code></p>
+
+<p><a name="External_links"></a></p>
+<h2>External links</h2>
+<p>* [https://keplerproject.github.io/luadoc/ LuaDoc]
+* [http://usejsdoc.org/ @use JSDoc]
+* [http://www.oracle.com/technetwork/java/javase/documentation/index-jsp-135444.html Javadoc tool web site]
+* [http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html Javadoc tags and how to write comments]</p>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc TESTING</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-138139619-1"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+
+	gtag('js', new Date());
+	gtag('config', 'UA-138139619-1');
+</script>
+
+</body>
+</html>
+

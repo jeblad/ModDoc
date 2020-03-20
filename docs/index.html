@@ -1,0 +1,853 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ModDoc documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ModDoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>moddoc</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="topics/introduction.md.html">Introduction</a></li>
+  <li><a href="topics/vagrant.md.html">Vagrant</a></li>
+  <li><a href="topics/vscode.md.html">VScode</a></li>
+  <li><a href="topics/CONTRIBUTING.md.html">Contributing</a></li>
+  <li><a href="topics/CODE_OF_CONDUCT.md.html">Code of Conduct</a></li>
+  <li><a href="topics/SECURITY.md.html">Security</a></li>
+  <li><a href="topics/TRANSLATING.md.html">Translating</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="examples/tiny.lua.html">tiny.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pure.moddoc</code></h1>
+<p>Format documentation of a module and make it linkable
+ The module makes some assumptions about the layout, basically the same as
+ [[JavaDoc]] and [[LuaDoc]], but does not follow those examples strictly.</p>
+<p> Especially,
+ it makes no attempt to do a deeper analysis of the provided code.</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: [mailto:jeblad@gmail.com]</li>
+        <li><strong>License</strong>: [https://creativecommons.org/licenses/by-sa/3.0/ Creative Commons: Attribution-ShareAlike 3.0 Unported] (CC BY-SA 3.0)</li>
+        <li><strong>Author</strong>: [[User:Jeblad]]</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name nowrap"><a href="#Frag:_init">Frag:_init ()</a></td>
+	<td class="summary">Initialiser for the Frag class</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag.weightOfClass">Frag.weightOfClass ()</a></td>
+	<td class="summary">Weight of the given class viewed as a possible Frag instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag.weightOfClassDescription">Frag.weightOfClassDescription ()</a></td>
+	<td class="summary">Weight of the given description viewed as a possible Frag instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag.weightOfClassSignature">Frag.weightOfClassSignature ()</a></td>
+	<td class="summary">Weight of the given signature viewed as a possible Frag instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag:renderClass">Frag:renderClass ()</a></td>
+	<td class="summary">Render method for the class member field</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag:renderWeight">Frag:renderWeight ()</a></td>
+	<td class="summary">Render method for the weight member field</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag:renderSummary">Frag:renderSummary ()</a></td>
+	<td class="summary">Render method for the summary member field</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag:renderDescription">Frag:renderDescription ()</a></td>
+	<td class="summary">Render method for the description member field</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Frag:render">Frag:render ()</a></td>
+	<td class="summary">Render method for the total Frag structure</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Var:_init">Var:_init ()</a></td>
+	<td class="summary">Initialiser for the Var class</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Var.weightOfClass">Var.weightOfClass ()</a></td>
+	<td class="summary">Weight of the given class viewed as a possible Var instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Var.weightOfClassDescription">Var.weightOfClassDescription ()</a></td>
+	<td class="summary">Weight of the given description viewed as a possible Var instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Var.weightOfClassSignature">Var.weightOfClassSignature ()</a></td>
+	<td class="summary">Weight of the given signature viewed as a possible Var instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Var:render">Var:render ()</a></td>
+	<td class="summary">Render method for the total Var structure</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Mod:_init">Mod:_init ()</a></td>
+	<td class="summary">Initialiser for the Mod class</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Mod.weightOfClass">Mod.weightOfClass ()</a></td>
+	<td class="summary">Weight of the given class viewed as a possible Frag instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Mod.weightOfClassDescription">Mod.weightOfClassDescription ()</a></td>
+	<td class="summary">Weight of the given description viewed as a possible Mod instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Mod.weightOfClassSignature">Mod.weightOfClassSignature ()</a></td>
+	<td class="summary">Weight of the given signature viewed as a possible Mod instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Mod:render">Mod:render ()</a></td>
+	<td class="summary">Render method for the total Mod structure</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Ret:_init">Ret:_init ()</a></td>
+	<td class="summary">Initialiser for the ret class</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Ret.weightOfClass">Ret.weightOfClass ()</a></td>
+	<td class="summary">Weight of the given class viewed as a possible Ret instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Ret.weightOfClassDescription">Ret.weightOfClassDescription ()</a></td>
+	<td class="summary">Weight of the given description viewed as a possible ret instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Ret.weightOfClassSignature">Ret.weightOfClassSignature ()</a></td>
+	<td class="summary">Weight of the given signature viewed as a possible Ret instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Ret:render">Ret:render ()</a></td>
+	<td class="summary">Render method for the total Ret structure</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Func:_init">Func:_init ()</a></td>
+	<td class="summary">Initialiser for the Func class</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Func.weightOfClass">Func.weightOfClass ()</a></td>
+	<td class="summary">Weight of the given class viewed as a possible Func instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Func.weightOfClassDescription">Func.weightOfClassDescription ()</a></td>
+	<td class="summary">Weight of the given description viewed as a possible Func instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Func.weightOfClassSignature">Func.weightOfClassSignature ()</a></td>
+	<td class="summary">Weight of the given signature viewed as a possible Func instance</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#Func:render">Func:render ()</a></td>
+	<td class="summary">Render method for the total Func structure</td>
+	</tr>
+	<tr>
+	<td class="name nowrap"><a href="#luadoc.build">luadoc.build ()</a></td>
+	<td class="summary">Invokable method to build a document</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Frag:_init"></a>
+    <strong>Frag:_init ()</strong>
+    </dt>
+    <dd>
+    Initialiser for the Frag class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag.weightOfClass"></a>
+    <strong>Frag.weightOfClass ()</strong>
+    </dt>
+    <dd>
+    Weight of the given class viewed as a possible Frag instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag.weightOfClassDescription"></a>
+    <strong>Frag.weightOfClassDescription ()</strong>
+    </dt>
+    <dd>
+    Weight of the given description viewed as a possible Frag instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag.weightOfClassSignature"></a>
+    <strong>Frag.weightOfClassSignature ()</strong>
+    </dt>
+    <dd>
+    Weight of the given signature viewed as a possible Frag instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag:renderClass"></a>
+    <strong>Frag:renderClass ()</strong>
+    </dt>
+    <dd>
+    Render method for the class member field
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag:renderWeight"></a>
+    <strong>Frag:renderWeight ()</strong>
+    </dt>
+    <dd>
+    Render method for the weight member field
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag:renderSummary"></a>
+    <strong>Frag:renderSummary ()</strong>
+    </dt>
+    <dd>
+    Render method for the summary member field
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag:renderDescription"></a>
+    <strong>Frag:renderDescription ()</strong>
+    </dt>
+    <dd>
+    Render method for the description member field
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Frag:render"></a>
+    <strong>Frag:render ()</strong>
+    </dt>
+    <dd>
+    Render method for the total Frag structure
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+
+        table the extended parent
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Var:_init"></a>
+    <strong>Var:_init ()</strong>
+    </dt>
+    <dd>
+    Initialiser for the Var class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Var.weightOfClass"></a>
+    <strong>Var.weightOfClass ()</strong>
+    </dt>
+    <dd>
+    Weight of the given class viewed as a possible Var instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Var.weightOfClassDescription"></a>
+    <strong>Var.weightOfClassDescription ()</strong>
+    </dt>
+    <dd>
+    Weight of the given description viewed as a possible Var instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Var.weightOfClassSignature"></a>
+    <strong>Var.weightOfClassSignature ()</strong>
+    </dt>
+    <dd>
+    Weight of the given signature viewed as a possible Var instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Var:render"></a>
+    <strong>Var:render ()</strong>
+    </dt>
+    <dd>
+    Render method for the total Var structure
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+
+        table the extended parent
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mod:_init"></a>
+    <strong>Mod:_init ()</strong>
+    </dt>
+    <dd>
+    Initialiser for the Mod class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mod.weightOfClass"></a>
+    <strong>Mod.weightOfClass ()</strong>
+    </dt>
+    <dd>
+    Weight of the given class viewed as a possible Frag instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mod.weightOfClassDescription"></a>
+    <strong>Mod.weightOfClassDescription ()</strong>
+    </dt>
+    <dd>
+    Weight of the given description viewed as a possible Mod instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mod.weightOfClassSignature"></a>
+    <strong>Mod.weightOfClassSignature ()</strong>
+    </dt>
+    <dd>
+    Weight of the given signature viewed as a possible Mod instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mod:render"></a>
+    <strong>Mod:render ()</strong>
+    </dt>
+    <dd>
+    Render method for the total Mod structure
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+
+        table the extended parent
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Ret:_init"></a>
+    <strong>Ret:_init ()</strong>
+    </dt>
+    <dd>
+    Initialiser for the ret class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Ret.weightOfClass"></a>
+    <strong>Ret.weightOfClass ()</strong>
+    </dt>
+    <dd>
+    Weight of the given class viewed as a possible Ret instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Ret.weightOfClassDescription"></a>
+    <strong>Ret.weightOfClassDescription ()</strong>
+    </dt>
+    <dd>
+    Weight of the given description viewed as a possible ret instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Ret.weightOfClassSignature"></a>
+    <strong>Ret.weightOfClassSignature ()</strong>
+    </dt>
+    <dd>
+    Weight of the given signature viewed as a possible Ret instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Ret:render"></a>
+    <strong>Ret:render ()</strong>
+    </dt>
+    <dd>
+    Render method for the total Ret structure
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+
+        table the extended parent
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Func:_init"></a>
+    <strong>Func:_init ()</strong>
+    </dt>
+    <dd>
+    Initialiser for the Func class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Func.weightOfClass"></a>
+    <strong>Func.weightOfClass ()</strong>
+    </dt>
+    <dd>
+    Weight of the given class viewed as a possible Func instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Func.weightOfClassDescription"></a>
+    <strong>Func.weightOfClassDescription ()</strong>
+    </dt>
+    <dd>
+    Weight of the given description viewed as a possible Func instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         table holding data used during initialization
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Func.weightOfClassSignature"></a>
+    <strong>Func.weightOfClassSignature ()</strong>
+    </dt>
+    <dd>
+    Weight of the given signature viewed as a possible Func instance
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">s</span>
+         string holding a code snippet
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Func:render"></a>
+    <strong>Func:render ()</strong>
+    </dt>
+    <dd>
+    Render method for the total Func structure
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parent</span>
+         table reference to the containing element
+        </li>
+        <li><span class="parameter">t</span>
+         table for optional data used while rendering
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        table the parent make the method chainable</li>
+        <li>
+        table the extended parent</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "luadoc.build"></a>
+    <strong>luadoc.build ()</strong>
+    </dt>
+    <dd>
+    Invokable method to build a document
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">frame</span>
+         table for contextual information
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+
+        string for display on a rendered page
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc TESTING</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-138139619-1"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+
+	gtag('js', new Date());
+	gtag('config', 'UA-138139619-1');
+</script>
+
+</body>
+</html>
+
