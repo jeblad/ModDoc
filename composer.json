@@ -6,9 +6,8 @@
 		"wiki",
 		"MediaWiki",
 		"extension",
-		"katsa",
-		"test stubs",
-		"test doubles"
+		"ModDoc",
+		"documentation"
 	],
 	"homepage": "https://www.mediawiki.org/wiki/Extension:ModDoc",
 	"license": "GPL-2.0",
