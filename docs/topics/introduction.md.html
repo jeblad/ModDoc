@@ -62,6 +62,7 @@
 
 <p><a name="Usage"></a></p>
 <h2>Usage</h2>
+
 <p>Usual call for documentation of a single module, like a replacement for the usual documentation page, would be like this</p>
 
 
@@ -69,7 +70,7 @@
 {{#invoke:LuaDoc|build|{{FULLPAGENAME}}}}
 </pre>
 
-<p>In the actual code there will be specially formatted comments. All comments acted upon by this use a single line comment followed by an at sign (@) and a tag name. (Is there any reason why we should use other kinds of comments? They are useful for commenting out blocks? How to describe local functions? Should inline docs be used, those can be supported by wikitext?)</p>
+<p>In the actual code there will be specially formatted comments. All comments acted upon by this use a single line comment followed by an at sign (@) and a tag name. (Is there any reason why we should use other kinds of comments? They are useful for commenting out blocks? How to describe local functions? Should inline docs be used, can those be supported by wikitext?)</p>
 
 <p>Note that all text is processed as wikitext, and it is possible to link internally and externally as seems fit. This also creates some problems as part of the text will have spaces or page breaks in odd places.</p>
 
@@ -86,6 +87,7 @@
 <p>All tags with a leading <code>x-</code> will be rejected, no matter if they can be recognized or not.</p>
 
 <h3>Available tags</h3>
+
 <p>A series of different tags are recognized. They capture words or other constructs, and will process the captures specially. The captures will be formatted and linked as necessary. The remaining text is treated as ordinary wikitext.</p>
 
 <p>If a tag taking captures fails to detect a capture, then possible captures will be successively pushed out, ultimately pushing all possible captures into the following text. This can be used in some cases to avoid using a specific capture, but is an indication that the documentation is broken.</p>
@@ -93,36 +95,46 @@
 <p>It is the intention to support the listed tags, but others can be added later. The block tags from JSdoc could be a source for additional entries.<a href="http://usejsdoc.org/#block-tags">JSDoc: Block Tags</a></p>
 
 <ul>
-    <li><p>@author<sup>*</sup> – Identify the author of an item. Authors are those that have contributed with content to the item.</p></li>
-    <li><p>@copyright<sup>*</sup> – Document some copyright information. Copyright is an identification of the entity that is allowed to set the license.</p></li>
-    <li><p>@license<sup>*</sup> – Identify the license that applies to this code. The license is the document that says why a module can be reused.</p></li>
-    <li><p>@provenance<sup>*</sup> – Document the history of ownership for the module. Link this to the external source if suitable.</p></li>
-    <li><p>@release<sup>?</sup> (alt @version) – Identify the release or version number of an item. This is necessary for imported modules.</p></li>
-    <li><p>@since<sup>?</sup> [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was added. The date, version, or revision when some functionality was added.</p></li>
-    <li><p>@deprecated<sup>?</sup> [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was deprecated. The date, version, or revision are when functionality become deprecated.</p></li>
-    <li><p>@var<sup>?</sup> [_word<em>|</em>descriptor_] – Describe a variable definition. First field is a type declaration. This implies a variable-class. (Not sure about this one, its like the signature of the function.)</p></li>
-    <li><p>@field<sup>*</sup> [_word<em>|</em>descriptor_] – Describe a table field definition. First field is a type declaration. This implies a variable-class.</p></li>
-    <li><p>@param<sup>*</sup> [_word<em>|</em>descriptor_] (alt @arg, @argument) – Document the parameter to a function. First field is a type declaration. This implies a function-class.</p></li>
-    <li><p>@returns<sup>*</sup> (alt @return) – Document the return values of a function. Since Lua can return multiple values, this tag could appear more than once. This implies a function-class.</p></li>
-    <li><p>@see<sup>*</sup> – Refer to some other documentation for more information. This tag spawns an entry possibly with links in a navigation box.</p></li>
-    <li><p>@usage &lt;<em>text</em>> – Describe the usage of the function or variable. This is one of several such free sections. The tag will be localized as necessary. (Not sure about this one, perhaps name the individual modifiers.)</p></li>
-    <li><p><sup>*</sup> Zero or more entries</p></li>
-    <li><p><sup>+</sup> One or more entries</p></li>
-    <li><p><sup>?</sup> Zero or one entry</p></li>
+    <li>@author¹ – Identify the author of an item. Authors are those that have contributed with content to the item.</li>
+    <li>@copyright¹ – Document some copyright information. Copyright is an identification of the entity that is allowed to set the license.</li>
+    <li>@license¹ – Identify the license that applies to this code. The license is the document that says why a module can be reused.</li>
+    <li>@provenance¹ – Document the history of ownership for the module. Link this to the external source if suitable.</li>
+    <li>@release³ (alt @version) – Identify the release or version number of an item. This is necessary for imported modules.</li>
+    <li>@since³ [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was added. The date, version, or revision when some functionality was added.</li>
+    <li>@deprecated³ [_date<em>|</em>version<em>|</em>revision_] – Document when this feature was deprecated. The date, version, or revision are when functionality become deprecated.</li>
+    <li>@var³ [_word<em>|</em>descriptor_] – Describe a variable definition. First field is a type declaration. This implies a variable-class. (Not sure about this one, its like the signature of the function.)</li>
+    <li>@field¹ [_word<em>|</em>descriptor_] – Describe a table field definition. First field is a type declaration. This implies a variable-class.</li>
+    <li>@param¹ [_word<em>|</em>descriptor_] (alt @arg, @argument) – Document the parameter to a function. First field is a type declaration. This implies a function-class.</li>
+    <li>@returns¹ (alt @return) – Document the return values of a function. Since Lua can return multiple values, this tag could appear more than once. This implies a function-class.</li>
+    <li>@see¹ – Refer to some other documentation for more information. This tag spawns an entry possibly with links in a navigation box.</li>
+    <li>@usage &lt;<em>text</em>> – Describe the usage of the function or variable. This is one of several such free sections. The tag will be localized as necessary. (Not sure about this one, perhaps name the individual modifiers.)</li>
+</ul>
+
+<p>Notemarks</p>
+
+<ul>
+    <li>¹ Zero or more entries</li>
+    <li>² One or more entries</li>
+    <li>³ Zero or one entry</li>
 </ul>
 
 <h3>Inferred tags</h3>
-<p>Some tags will be extracted from the following block of code if missing (it is the intention to support these)
-* @class &lt;<em>word</em>> – The first documentation block will be assumed to be of class module, and later ones will have classes inferred from the code block unless it is specified explicitly.
-* @description &lt;<em>text</em>> – The description is the documentation following the summary, but can be set explicitly. (Not sure if this should be described here, and if it should have a tag.)
-* @name &lt;<em>word</em>> – The name of the function or table definition. This is usually inferred from simple code analysis, and the programmer does not need to define it. (The programmer should not add it at all.)
-* @access &lt;<em>word</em>> – Whether the function or variable is public or private. This will be error prone if inferred from the code.
-* @signature &lt;<em>line</em>> – A signature inferred from a single line of code. </p>
+
+<p>Some tags will be extracted from the following block of code if missing (it is the intention to support these)</p>
+
+<ul>
+    <li>@class &lt;<em>word</em>> – The first documentation block will be assumed to be of class module, and later ones will have classes inferred from the code block unless it is specified explicitly.</li>
+    <li>@description &lt;<em>text</em>> – The description is the documentation following the summary, but can be set explicitly. (Not sure if this should be described here, and if it should have a tag.)</li>
+    <li>@name &lt;<em>word</em>> – The name of the function or table definition. This is usually inferred from simple code analysis, and the programmer does not need to define it. (The programmer should not add it at all.)</li>
+    <li>@access &lt;<em>word</em>> – Whether the function or variable is public or private. This will be error prone if inferred from the code.</li>
+    <li>@signature &lt;<em>line</em>> – A signature inferred from a single line of code.</li>
+</ul>
 
 <h3>Additional comments</h3>
+
 <p>There are available block comments in Lua, and they can also be used in code documented with LuaDoc. The commented blocks will be removed before further processing, making the resulting documentation stripped down to the bare running code.</p>
 
-<p>In Lua a block comment starts like <code>--[[</code> and run until the corresponding <code>]]</code>. Actually, if we add an additional leading hyphen then the comment will be turned into a single line comment. That leads to a situation whereby the following code can comment out a piece of code</p>
+<p>In Lua a block comment starts like <code>--[[</code> and run until the corresponding <code>]]</code>. Actually, if we add a leading hyphen then the comment will be turned into a single line comment. That leads to a situation whereby the following code can comment out a piece of code</p>
 
 
 <pre>
@@ -146,10 +158,13 @@ print(10)         -- no action (comment)
 
 <p><a name="External_links"></a></p>
 <h2>External links</h2>
-<p>* [https://keplerproject.github.io/luadoc/ LuaDoc]
-* [http://usejsdoc.org/ @use JSDoc]
-* [http://www.oracle.com/technetwork/java/javase/documentation/index-jsp-135444.html Javadoc tool web site]
-* [http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html Javadoc tags and how to write comments]</p>
+
+<ul>
+    <li><a href="https://keplerproject.github.io/luadoc/">LuaDoc</a></li>
+    <li><a href="http://usejsdoc.org/">@use JSDoc</a></li>
+    <li><a href="http://www.oracle.com/technetwork/java/javase/documentation/index-jsp-135444.html">Javadoc tool web site</a></li>
+    <li><a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html">Javadoc tags and how to write comments</a></li>
+</ul>
 
 
 </div> <!-- id="content" -->
