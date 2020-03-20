@@ -22,7 +22,7 @@ ModDoc depends on the Scribunto extension, and provide formatted documentation f
 
 ## Development
 
-ModDoc uses [Mediawiki-Vagrant](https://www.mediawiki.org/wiki/MediaWiki-Vagrant), and an instance can be made quite easily. A more complete setup can be found at the page [vagrant](/jeblad/ModDoc/wiki/vagrant).
+ModDoc uses [Mediawiki-Vagrant](https://www.mediawiki.org/wiki/MediaWiki-Vagrant), and an instance can be made quite easily. A more complete setup can be found at the page [vagrant](../../wiki/vagrant).
 
 1. Make sure you have Vagrant, etc, prepare a development directory, and move to that directory.
 2. Clone Mediawiki
