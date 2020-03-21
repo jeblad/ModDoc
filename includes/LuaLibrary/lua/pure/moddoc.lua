@@ -26,20 +26,20 @@ local Frag = {}
 Frag.__index = Frag
 
 setmetatable(Frag, {
-  __call = function (cls, ...)
-    local self = setmetatable({}, cls)
-    self:_init(...)
-    return self
-  end,
+	__call = function (cls, ...)
+		local self = setmetatable({}, cls)
+		self:_init(...)
+		return self
+	end,
 })
 
 --- Initialiser for the Frag class
 -- @param t table holding data used during initialization
 function Frag:_init( t )
-  self['_class'] = t['_class']
-  self['_weight'] = t['_weight']
-  self['_summary'] = t['_summary']
-  self['_description'] = t['_description']
+	self['_class'] = t['_class']
+	self['_weight'] = t['_weight']
+	self['_summary'] = t['_summary']
+	self['_description'] = t['_description']
 end
 
 --- Weight of the given class viewed as a possible Frag instance
@@ -125,19 +125,19 @@ Var.__index = Var
 fragTypes['variable'] = Var
 
 setmetatable(Var, {
-  __index = Frag,
-  __call = function (cls, ...)
-    local self = setmetatable({}, cls)
-    self:_init(...)
-    return self
-  end,
+	__index = Frag,
+	__call = function (cls, ...)
+		local self = setmetatable({}, cls)
+		self:_init(...)
+		return self
+	end,
 })
 
 --- Initialiser for the Var class
 -- @param t table holding data used during initialization
 function Var:_init( t )
-  Frag._init(self, t)
-  self['_var'] = t['_var']
+	Frag._init(self, t)
+	self['_var'] = t['_var']
 end
 
 --- Weight of the given class viewed as a possible Var instance
@@ -211,18 +211,18 @@ Mod.__index = Mod
 fragTypes['module'] = Mod
 
 setmetatable(Mod, {
-  __index = Frag,
-  __call = function (cls, ...)
-    local self = setmetatable({}, cls)
-    self:_init(...)
-    return self
-  end,
+	__index = Frag,
+	__call = function (cls, ...)
+		local self = setmetatable({}, cls)
+		self:_init(...)
+		return self
+	end,
 })
 
 --- Initialiser for the Mod class
 -- @param t table holding data used during initialization
 function Mod:_init( t )
-  Frag._init(self, t)
+	Frag._init(self, t)
 end
 
 --- Weight of the given class viewed as a possible Frag instance
@@ -281,18 +281,18 @@ Ret.__index = Ret
 fragTypes['return'] = Ret
 
 setmetatable(Ret, {
-  __index = Frag,
-  __call = function (cls, ...)
-    local self = setmetatable({}, cls)
-    self:_init(...)
-    return self
-  end,
+	__index = Frag,
+	__call = function (cls, ...)
+		local self = setmetatable({}, cls)
+		self:_init(...)
+		return self
+	end,
 })
 
 --- Initialiser for the ret class
 -- @param t table holding data used during initialization
 function Ret:_init( t )
-  Frag._init(self, t)
+	Frag._init(self, t)
 end
 
 --- Weight of the given class viewed as a possible Ret instance
@@ -348,20 +348,20 @@ Func.__index = Func
 fragTypes['function'] = Func
 
 setmetatable(Func, {
-  __index = Frag,
-  __call = function (cls, ...)
-    local self = setmetatable({}, cls)
-    self:_init(...)
-    return self
-  end,
+	__index = Frag,
+	__call = function (cls, ...)
+		local self = setmetatable({}, cls)
+		self:_init(...)
+		return self
+	end,
 })
 
 --- Initialiser for the Func class
 -- @param t table holding data used during initialization
 function Func:_init( t )
-  Frag._init(self, t)
-  self['_param'] = t['_param']
-  self['_return'] = t['_return']
+	Frag._init(self, t)
+	self['_param'] = t['_param']
+	self['_return'] = t['_return']
 end
 
 --- Weight of the given class viewed as a possible Func instance
