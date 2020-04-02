@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kly"
+		]
+	},
+	"moddoc-desc": "提供用於模組的 LuaDoc 樣式文件"
+}

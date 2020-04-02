@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Piramidion"
+		]
+	},
+	"moddoc-desc": "Надає для модулів документацію в стилі LuaDoc"
+}

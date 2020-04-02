@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eduardo Addad de Oliveira"
+		]
+	},
+	"moddoc-desc": "Fornece documentação no estilo LuaDoc para módulos"
+}

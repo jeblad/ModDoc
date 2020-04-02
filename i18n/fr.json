@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wladek92"
+		]
+	},
+	"moddoc-desc": "Fournit la documentation des modules en format LuaDoc"
+}
