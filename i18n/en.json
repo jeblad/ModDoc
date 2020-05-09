@@ -4,5 +4,5 @@
 			"Jeblad"
 		]
 	},
-	"moddoc-desc": "Provides LuaDoc-style documentation for modules"
+	"moddoc-desc": "Provides Lua documentation in LDoc-style for modules"
 }
