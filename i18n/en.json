@@ -1,8 +1,39 @@
 {
 	"@metadata": {
 		"authors": [
-			"Jeblad"
+            "Jeblad",
+            "LMN8"
 		]
 	},
-	"moddoc-desc": "Provides Lua documentation in LDoc-style for modules"
+	"moddoc-desc": "Provides Lua documentation in LDoc-style for modules",
+    "moddoc-header-class": "Package class",
+    "moddoc-header-documentation": "Documentation",
+    "moddoc-header-function": "Package function",
+    "moddoc-header-items": "Package items",
+    "moddoc-header-other": "Other items",
+    "moddoc-header-private": "Private items",
+    "moddoc-no-content": "Lua source code not found in $1",
+    "moddoc-no-markup": "documentation markup for ModDoc not found in $1",
+    "moddoc-optional": "optional",
+    "moddoc-parentheses": "&#32;($1)",
+    "moddoc-separator-colon": ";&#32;",
+    "moddoc-separator-semicolon": ":&#32;",
+    "moddoc-tag-error": "{{plural:$1|Error|Errors}}",
+    "moddoc-tag-field": "{{plural:$1|Field|Fields}}",
+    "moddoc-tag-fixme": "{{plural:$1|Bug|Bugs}}",
+    "moddoc-tag-note": "{{plural:$1|Note|Notes}}",
+    "moddoc-tag-param": "{{plural:$1|Parameter|Parameters}}",
+    "moddoc-tag-return": "Returns",
+    "moddoc-tag-see": "See also",
+    "moddoc-tag-todo": "TODO",
+    "moddoc-tag-usage": "Usage",
+    "moddoc-tag-warning": "{{plural:$1|Warning|Warnings}}",
+    "moddoc-type-boolean": "boolean",
+    "moddoc-type-function": "function",
+    "moddoc-type-member": "member",
+    "moddoc-type-nil": "nil",
+    "moddoc-type-number": "number",
+    "moddoc-type-string": "string",
+    "moddoc-type-table": "table",
+    "moddoc-type-variable": "variable"
 }
