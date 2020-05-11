@@ -1471,6 +1471,7 @@ moddoc.tags._alias = {
 	-- Normal aliases.
 	['about']       = 'summary',
 	['abstract']    = 'summary',
+	['brief']       = 'summary',
 	['bug']         = 'fixme',
 	['argument']    = 'param',
 	['credits']     = 'credit',
@@ -1555,8 +1556,8 @@ moddoc.tags._generic_tags = {
 	['member']      = true
 }
 
---  Expose extension.
+--  Install into the `mw` and `package` globals.
 mw = mw or {}
 mw.ext = mw.ext or {}
 mw.ext.moddoc = moddoc
-return moddoc
+package.loaded['mw.ext.moddoc'] = moddoc
