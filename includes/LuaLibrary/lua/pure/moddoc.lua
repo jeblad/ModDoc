@@ -1476,6 +1476,7 @@ moddoc.tags._alias = {
 	['argument']    = 'param',
 	['credits']     = 'credit',
 	['code']        = 'usage',
+    ['details']     = 'description',
 	['discussion']  = 'description',
 	['exception']   = 'error',
 	['lfunction']   = 'function',
