@@ -29,7 +29,7 @@ class Hooks {
 	 * @param array &$extraLibraryPaths additional libs
 	 * @return bool
 	 */
-	public static function onRegisterScribuntoExternalLibraryPaths(
+	public static function onScribuntoExternalLibraryPaths(
 		string $engine,
 		array &$extraLibraryPaths
 	): bool {
