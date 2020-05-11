@@ -1,6 +1,7 @@
 --- Lexer for Lua source code written in pure Lua.
 --  @script             lexer
 --  @license            MIT
+--  @author             [[github:LoganDark|LoganDark]]
 --  @param              {string} text Lua source code to lex.
 --  @return             {string} Table of line arrays containing lexemes.
 

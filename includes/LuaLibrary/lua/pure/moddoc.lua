@@ -27,10 +27,10 @@ local moddoc = {}
 
 --  Module dependencies.
 local title = mw.title.getCurrentTitle()
-local references = require('moddoc/references')
-local lexer = require('moddoc/lexer')
-local unindent = require('moddoc/unindent')
-local template = require('moddoc/template')
+local references = require( 'moddoc/references' )
+local lexer = require( 'moddoc/lexer' )
+local unindent = require( 'moddoc/unindent' )
+local template = require( 'moddoc/template' )
 
 --  Module variables.
 local DEV_WIKI, frame, _options = '//www.mediawiki.org'
@@ -55,14 +55,14 @@ local DOCBUNTO_TAG, DOCBUNTO_TAG_VALUE, DOCBUNTO_TAG_MOD_VALUE, DOCBUNTO_TYPE
 --  @return             {string} Message in content language. If arguments
 --                      are supplied, the message is parsed as wikitext.
 --  @local
-local function msg( key, ... )
+local function msg (  key, ...  )
 	local ret = mw.message.new( 'moddoc-' .. key )
 	if arg.n ~= 0 then
-		ret:params( unpack(arg) )
+		ret:params( unpack( arg ) )
 	end
 	ret = ret:plain()
 	if arg.n ~= 0 then
-		ret = frame:preprocess(ret)
+		ret = frame:preprocess( ret )
 	end
 	return ret
 end
@@ -74,8 +74,8 @@ end
 --  @return             {boolean} Boolean `true` if wikitext flag value
 --                      is 1. Boolean `false` if wikitext value is false.
 --  @local
-local function yesno(value)
-	return tonumber(value) == 1 or value == 'true'
+local function yesno ( value )
+	return tonumber( value ) == 1 or value == 'true'
 end
 
 --- Pattern configuration function.
@@ -84,7 +84,7 @@ end
 --  @param              {table} options Configuration options.
 --  @param              {boolean} options.colon Colon mode.
 --  @local
-local function configure_patterns(options)
+local function configure_patterns ( options )
 	DOCBUNTO_TAG = options.colon and '^%s*(%w+):' or '^%s*@(%w+)'
 	DOCBUNTO_TAG_VALUE = DOCBUNTO_TAG .. '(.*)'
 	DOCBUNTO_TAG_MOD_VALUE = DOCBUNTO_TAG .. '%[([^%]]*)%](.*)'
@@ -96,11 +96,11 @@ end
 --  @param              {string} str Tag string to process.
 --  @return             {table} Tag object.
 --  @local
-local function process_tag(str)
+local function process_tag ( str )
 	local tag = {}
 
-	if str:find(DOCBUNTO_TAG_MOD_VALUE) then
-		tag.name, tag.modifiers, tag.value = str:match(DOCBUNTO_TAG_MOD_VALUE)
+	if str:find( DOCBUNTO_TAG_MOD_VALUE ) then
+		tag.name, tag.modifiers, tag.value = str:match( DOCBUNTO_TAG_MOD_VALUE )
 		local modifiers = {}
 
 		for mod in tag.modifiers:gmatch('[^%s,]+') do
@@ -115,10 +115,10 @@ local function process_tag(str)
 		tag.modifiers = modifiers
 
 	else
-		tag.name, tag.value = str:match(DOCBUNTO_TAG_VALUE)
+		tag.name, tag.value = str:match( DOCBUNTO_TAG_VALUE )
 	end
 
-	tag.value = mw.text.trim(tag.value)
+	tag.value = mw.text.trim( tag.value )
 
 	if moddoc.tags._type_alias[tag.name] then
 		if moddoc.tags._type_alias[tag.name] ~= 'variable' then
@@ -126,19 +126,19 @@ local function process_tag(str)
 			tag.name = 'field'
 		end
 
-		if tag.value:match('^%S+') ~= '...' then
-		   tag.value = tag.value:gsub('^(%S+)', '{%1}')
+		if tag.value:match( '^%S+' ) ~= '...' then
+		   tag.value = tag.value:gsub( '^(%S+)', '{%1}' )
 		end
 	end
 
 	tag.name = moddoc.tags._alias[tag.name] or tag.name
 
-	if tag.name ~= 'usage' and tag.value:find(DOCBUNTO_TYPE) then
-		tag.type = tag.value:match(DOCBUNTO_TYPE)
-		if tag.type:find('^%?') then
+	if tag.name ~= 'usage' and tag.value:find( DOCBUNTO_TYPE ) then
+		tag.type = tag.value:match( DOCBUNTO_TYPE )
+		if tag.type:find( '^%?' ) then
 			tag.type = tag.type:sub(2) .. '|nil'
 		end
-		tag.value = tag.value:gsub(DOCBUNTO_TYPE, '')
+		tag.value = tag.value:gsub( DOCBUNTO_TYPE, '' )
 	end
 
 	if moddoc.tags[tag.name] == TAG_FLAG then
@@ -153,13 +153,13 @@ end
 --  @param              {table} documentation Package doclet info.
 --  @return             {table} Information name-value map.
 --  @local
-local function extract_info(documentation)
+local function extract_info ( documentation )
 	local info = {}
 
-	for _, tag in ipairs(documentation.tags) do
+	for _, tag in ipairs( documentation.tags ) do
 		if moddoc.tags._module_info[tag.name] then
 			if info[tag.name] then
-				if not info[tag.name]:find('^%* ') then
+				if not info[tag.name]:find( '^%* ' ) then
 					info[tag.name] = '* ' .. info[tag.name]
 				end
 				info[tag.name] = info[tag.name] .. '\n* ' .. tag.value
@@ -178,20 +178,20 @@ end
 --  @param              {table} item Item documentation data.
 --  @return             {string} Item type.
 --  @local
-local function extract_type(item)
+local function extract_type ( item )
 	local item_type
-	for _, tag in ipairs(item.tags) do
+	for _, tag in ipairs( item.tags ) do
 		if moddoc.tags[tag.name] == TAG_TYPE then
 			item_type = tag.name
 
 			if tag.name == 'variable' then
-				local implied_local = process_tag('@local')
-				table.insert(item.tags, implied_local)
+				local implied_local = process_tag( '@local' )
+				table.insert( item.tags, implied_local )
 				item.tags['local'] = implied_local
 			end
 
 			if moddoc.tags._generic_tags[item_type] and not moddoc.tags._project_level[item_type] and tag.type then
-				item_type = item_type .. msg('separator-colon') .. tag.type
+				item_type = item_type .. msg( 'separator-colon' ) .. tag.type
 			end
 			break
 		end
@@ -205,10 +205,10 @@ end
 --  @param              {boolean} project Whether the item is project-level.
 --  @return             {string} Item name.
 --  @local
-local function extract_name(item, opts)
+local function extract_name ( item, opts )
 	opts = opts or {}
 	local item_name
-	for _, tag in ipairs(item.tags) do
+	for _, tag in ipairs( item.tags ) do
 		if moddoc.tags[tag.name] == TAG_TYPE then
 			item_name = tag.value; break;
 		end
@@ -218,20 +218,20 @@ local function extract_name(item, opts)
 		return item_name
 	end
 
-	item_name = item.code:match('\nreturn%s+([%w_]+)')
+	item_name = item.code:match( '\nreturn%s+([%w_]+)' )
 
 	if item_name == 'p' and not item.tags['alias'] then
 		local implied_alias = { name = 'alias', value = 'p' }
 		item.tags['alias'] = implied_alias
-		table.insert(item.tags, implied_alias)
+		table.insert( item.tags, implied_alias )
 	end
 
-	item_name = (item_name and item_name ~= 'p')
+	item_name = ( item_name and item_name ~= 'p' )
 		and item_name
 		or  item.filename
-				:gsub('^' .. mw.site.namespaces[828].name .. ':', '')
-				:gsub('^(%u)', mw.ustring.lower)
-				:gsub('/', '.'):gsub(' ', '_')
+				:gsub( '^' .. mw.site.namespaces[828].name .. ':', '' )
+				:gsub( '^(%u)', mw.ustring.lower )
+				:gsub( '/', '.'):gsub( ' ', '_'  )
 
 	return item_name
 end
@@ -245,7 +245,7 @@ end
 --  @param[opt]         {boolean} opts.lookbehind Whether a variable name precedes the index.
 --  @return             {string} Item name.
 --  @local
-local function deduce_name(tokens, index, opts)
+local function deduce_name ( tokens, index, opts )
 	local name = ''
 
 	if opts.lookbehind then
@@ -259,7 +259,7 @@ local function deduce_name(tokens, index, opts)
 
 	elseif opts.lookahead then
 		for i2 = index, #tokens do
-			if tokens[i2].type ~= 'keyword' and not tokens[i2].data:find('^%(') then
+			if tokens[i2].type ~= 'keyword' and not tokens[i2].data:find( '^%(' ) then
 				name = name .. tokens[i2].data
 			else
 				break
@@ -274,14 +274,14 @@ end
 --  @function           code_static_analysis
 --  @param              {table} item Item documentation data.
 --  @local
-local function code_static_analysis(item)
-	local tokens = lexer(item.code)[1]
+local function code_static_analysis ( item )
+	local tokens = lexer( item.code )[1]
 	local t, i = tokens[1], 1
 	local item_name, item_type
 
 	while t do
 		if t.type == 'whitespace' then
-			table.remove(tokens, i)
+			table.remove( tokens, i )
 		end
 
 		t, i = tokens[i + 1], i + 1
@@ -290,13 +290,13 @@ local function code_static_analysis(item)
 
 	while t do
 		if t.data == '=' then
-			item_name = deduce_name(tokens, i - 1, { lookbehind = true })
+			item_name = deduce_name( tokens, i - 1, { lookbehind = true } )
 		end
 
 		if t.data == 'function' then
 			item_type = 'function'
 			if tokens[i + 1].data ~= '(' then
-				item_name = deduce_name(tokens, i + 1, { lookahead = true })
+				item_name = deduce_name( tokens, i + 1, { lookahead = true } )
 			end
 		end
 
@@ -304,9 +304,9 @@ local function code_static_analysis(item)
 			item_type = 'table'
 		end
 
-		if t.data == 'local' and not (item.tags['private'] or item.tags['local'] or item.type == 'type') then
-			local implied_local = process_tag('@local')
-			table.insert(item.tags, implied_local)
+		if t.data == 'local' and not ( item.tags['private'] or item.tags['local'] or item.type == 'type' ) then
+			local implied_local = process_tag( '@local' )
+			table.insert( item.tags, implied_local )
 			item.tags['local'] = implied_local
 		end
 
@@ -322,15 +322,15 @@ end
 --  @param              {table} item Item documentation data array.
 --  @return             {table} Item documentation data map.
 --  @local
-local function hash_map(array)
+local function hash_map ( array )
 	local map = array
-	for _, element in ipairs(array) do
+	for _, element in ipairs( array ) do
 		if map[element.name] and not map[element.name].name then
-			table.insert(map[element.name], mw.clone(element))
+			table.insert( map[element.name], mw.clone( element ) )
 		elseif map[element.name] and map[element.name].name then
-			map[element.name] = { map[element.name], mw.clone(element) }
+			map[element.name] = { map[element.name], mw.clone( element ) }
 		else
-			map[element.name] = mw.clone(element)
+			map[element.name] = mw.clone( element )
 		end
 	end
 	return map
@@ -344,34 +344,34 @@ end
 --  @param              {string} alias Export alias for item.
 --  @param              {boolean} factory Whether the documentation item is a factory function.
 --  @local
-local function export_item(documentation, name, item_no, alias, factory)
-	for _, item in ipairs(documentation.items) do
+local function export_item ( documentation, name, item_no, alias, factory )
+	for _, item in ipairs( documentation.items ) do
 		if name == item.name then
 			item.tags['local'] = nil
 			item.tags['private'] = nil
 
-			for index, tag in ipairs(item.tags) do
+			for index, tag in ipairs( item.tags ) do
 				if moddoc.tags._privacy_tags[tag.name] then
-					table.remove(item.tags, index)
+					table.remove( item.tags, index )
 				end
 			end
 
-			item.type = item.type:gsub('variable', 'member')
+			item.type = item.type:gsub( 'variable', 'member' )
 
 			if factory then
 				item.alias =
 					documentation.items[item_no].tags['factory'].value ..
-					(alias:find('^%[') and '' or (not item.tags['static'] and ':' or '.')) ..
+					( alias:find( '^%[' ) and '' or ( not item.tags['static'] and ':' or '.') ) ..
 					alias
 			else
 
 				item.alias =
-					((documentation.tags['alias'] or {}).value or documentation.name) ..
-					(alias:find('^%[') and '' or (documentation.type == 'classmod' and not item.tags['static'] and ':' or '.')) ..
+					( ( documentation.tags['alias'] or {} ).value or documentation.name ) ..
+					( alias:find( '^%[' ) and '' or ( documentation.type == 'classmod' and not item.tags['static'] and ':' or '.' ) ) ..
 					alias
 			end
 
-			item.hierarchy = mw.text.split((item.alias:gsub('["\']?%]', '')), '[.:%[\'""]+')
+			item.hierarchy = mw.text.split( ( item.alias:gsub( '["\']?%]', '' ) ), '[.:%[\'""]+' )
 		end
 	end
 end
@@ -379,7 +379,7 @@ end
 --- Subitem tag correction utility.
 --  @function           correct_subitem_tag
 --  @param              {table} item Item documentation data.
-local function correct_subitem_tag(item)
+local function correct_subitem_tag ( item )
 	local field_tag = item.tags['field']
 	if item.type ~= 'function' or not field_tag then
 		return
@@ -388,7 +388,7 @@ local function correct_subitem_tag(item)
 	if field_tag.name then
 		field_tag.name = 'param'
 	else
-		for _, tag_el in ipairs(field_tag) do
+		for _, tag_el in ipairs( field_tag ) do
 			tag_el.name = 'param'
 		end
 	end
@@ -396,10 +396,10 @@ local function correct_subitem_tag(item)
 	local param_tag = item.tags['param']
 	if param_tag and not param_tag.name then
 		if field_tag.name then
-			table.insert(param_tag, field_tag)
+			table.insert( param_tag, field_tag )
 		else
-			for _, tag_el in ipairs(field_tag) do
-				table.insert(param_tag, tag_el)
+			for _, tag_el in ipairs( field_tag ) do
+				table.insert( param_tag, tag_el )
 			end
 		end
 
@@ -408,12 +408,12 @@ local function correct_subitem_tag(item)
 			param_tag = { param_tag, field_tag }
 
 		else
-			for i, tag_el in ipairs(field_tag) do
+			for i, tag_el in ipairs( field_tag ) do
 				if i == 1  then
 					param_tag = { param_tag }
 				end
-				for _, tag_el in ipairs(field_tag) do
-					table.insert(param_tag, tag_el)
+				for _, tag_el in ipairs( field_tag ) do
+					table.insert( param_tag, tag_el )
 				end
 			end
 		end
@@ -430,7 +430,7 @@ end
 --  @param              {table} item Item documentation data.
 --  @param              {string} name Tag name.
 --  @param[opt]         {string} alias Target alias for tag.
-local function override_item_tag(item, name, alias)
+local function override_item_tag ( item, name, alias )
 	if item.tags[name] then
 		item[alias or name] = item.tags[name].value
 	end
@@ -441,12 +441,12 @@ end
 --  @param              {string} hash Leading hash.
 --  @param              {string} text Header text.
 --  @return             {string} MediaWiki header.
-local function markdown_header(hash, text)
+local function markdown_header ( hash, text )
 	local symbol = '='
 	return
-		'\n' .. symbol:rep(#hash) ..
+		'\n' .. symbol:rep( #hash ) ..
 		' ' .. text ..
-		' ' .. symbol:rep(#hash) ..
+		' ' .. symbol:rep( #hash ) ..
 		'\n'
 end
 
@@ -454,8 +454,8 @@ end
 --  @function           item_reference
 --  @param              {string} ref Item reference.
 --  @return             {string} Internal MediaWiki link to article item.
-local function item_reference(ref)
-	local temp = mw.text.split(ref, '|')
+local function item_reference ( ref )
+	local temp = mw.text.split( ref, '|' )
 	local item = temp[1]
 	local text = temp[2] or temp[1]
 
@@ -474,56 +474,56 @@ end
 --  @param              {table} item Item documentation data.
 --  @param              {table} options Configuration options.
 --  @local
-local function type_reference(item, options)
+local function type_reference ( item, options )
 	local interwiki = mw.site.server == DEV_WIKI and '' or 'mediawiki:'
 
 	if
 		not options.noluaref and
 		item.value and
-		item.value:match('^%S+') == '<code>...</code>'
+		item.value:match( '^%S+' ) == '<code>...</code>'
 	then
-		item.value = item.value:gsub('^(%S+)', mw.text.tag{
+		item.value = item.value:gsub( '^(%S+)', mw.text.tag{
 			name = 'code',
 			content = '[[' .. interwiki .. 'Lua reference manual#varargs|...]]'
-		})
+		} )
 	end
 
 	if not item.type then
 		return
 	end
 
-	item.type = item.type:gsub('&#32;', '\26')
+	item.type = item.type:gsub( '&#32;', '\26' )
 	local space_ptn = '[;|][%s\26]*'
-	local types, t = mw.text.split(item.type, space_ptn)
+	local types, t = mw.text.split( item.type, space_ptn )
 	local spaces = {}
-	for space in item.type:gmatch(space_ptn) do
-		table.insert(spaces, space)
+	for space in item.type:gmatch( space_ptn ) do
+		table.insert( spaces, space )
 	end
 
-	for index, type in ipairs(types) do
+	for index, type in ipairs( types ) do
 		t = types[index]
 		local data = references.types[type]
 		local name = data and data.name or t
-		if not name:match('%.') and not name:match('^%u') and data then
-			name = msg('type-' .. name)
+		if not name:match( '%.' ) and not name:match( '^%u' ) and data then
+			name = msg( 'type-' .. name )
 		end
 		if data and not options.noluaref then
 			types[index] = '[[' .. interwiki .. data.link .. '|' .. name .. ']]'
 		elseif
 			not options.noluaref and
-			not t:find('^line') and
+			not t:find( '^line' ) and
 			not moddoc.tags._generic_tags[t]
 		then
 			types[index] = '[[#' .. t .. '|' .. name .. ']]'
 		end
 	end
 
-	for index, space in ipairs(spaces) do
+	for index, space in ipairs( spaces ) do
 		types[index] = types[index] .. space
 	end
 
-	item.type = table.concat(types)
-	item.type = item.type:gsub('\26', '&#32;')
+	item.type = table.concat( types )
+	item.type = item.type:gsub( '\26', '&#32;' )
 end
 
 --- Markdown preprocessor to MediaWiki format.
@@ -531,28 +531,28 @@ end
 --  @param              {string} str Unprocessed Markdown string.
 --  @return             {string} MediaWiki-compatible markup with HTML formatting.
 --  @local
-local function markdown(str)
+local function markdown ( str )
 	-- Bold & italic tags.
-	str = str:gsub('%*%*%*([^\n*]+)%*%*%*', '<b><i>%1<i></b>')
-	str = str:gsub('%*%*([^\n*]+)%*%*', '<b>%1</b>')
-	str = str:gsub('%*([^\n*]+)%*', '<i>%1</i>')
+	str = str:gsub( '%*%*%*([^\n*]+)%*%*%*', '<b><i>%1<i></b>' )
+	str = str:gsub( '%*%*([^\n*]+)%*%*', '<b>%1</b>' )
+	str = str:gsub( '%*([^\n*]+)%*', '<i>%1</i>' )
 
 	-- Self-closing header support.
-	str = str:gsub('\n?(#+) *([^\n#]+) *#+%s', markdown_header)
+	str = str:gsub( '\n?(#+) *([^\n#]+) *#+%s', markdown_header )
 
 	-- External and internal links.
-	str = str:gsub('%[([^\n]+)%]%(([^\n][^\n]-)%)', '[%2 %1]')
-	str = str:gsub('%@{([^\n}]+)}', item_reference)
+	str = str:gsub( '%[([^\n]+)%]%(([^\n][^\n]-)%)', '[%2 %1]' )
+	str = str:gsub( '%@{([^\n}]+)}', item_reference )
 
 	-- Programming & scientific notation.
-	str = str:gsub('%f["`]`([^\n`]+)`%f[^"`]', '<code><nowiki>%1</nowiki></code>')
-	str = str:gsub('%$%$\\ce{([^\n}]+)}%$%$', '<chem>%1</chem>')
-	str = str:gsub('%$%$([^\n$]+)%$%$', '<math display="inline">%1</math>')
+	str = str:gsub( '%f["`]`([^\n`]+)`%f[^"`]', '<code><nowiki>%1</nowiki></code>' )
+	str = str:gsub( '%$%$\\ce{([^\n}]+)}%$%$', '<chem>%1</chem>' )
+	str = str:gsub( '%$%$([^\n$]+)%$%$', '<math display="inline">%1</math>' )
 
 	-- Strikethroughs and superscripts.
-	str = str:gsub('~~([^\n~]+)~~', '<del>%1</del>')
-	str = str:gsub('%^%(([^)]+)%)', '<sup>%1</sup>')
-	str = str:gsub('%^%s*([^%s%p]+)', '<sup>%1</sup>')
+	str = str:gsub( '~~([^\n~]+)~~', '<del>%1</del>' )
+	str = str:gsub( '%^%(([^)]+)%)', '<sup>%1</sup>' )
+	str = str:gsub( '%^%s*([^%s%p]+)', '<sup>%1</sup>' )
 
 	-- HTML output.
 	return str
@@ -565,25 +565,25 @@ end
 --  @param              {table} options Configuration options.
 --  @param[opt]         {function} preop Item data preprocessor.
 --  @local
-local function render_item(stream, item, options, preop)
+local function render_item ( stream, item, options, preop )
 	local item_id = item.alias or item.name
-	if preop then preop(item, options) end
+	if preop then preop( item, options ) end
 	local item_name = item.alias or item.name
 
 	if options.strip and item.export and item.hierarchy then
-		item_name = item_name:gsub('^[%w_]+[.[]?', '')
+		item_name = item_name:gsub( '^[%w_]+[.[]?', '' )
 	end
 
-	type_reference(item, options)
+	type_reference( item, options )
 
-	stream:wikitext(';<code id="' .. item_id .. '">' .. item_name .. '</code>' .. msg('parentheses', item.type)):newline()
+	stream:wikitext( ';<code id="' .. item_id .. '">' .. item_name .. '</code>' .. msg( 'parentheses', item.type ) ):newline()
 
-	if (#(item.summary or '') + #item.description) ~= 0 then
-		local sep = #(item.summary or '') ~= 0 and #item.description ~= 0
-			and (item.description:find('^[:#*]+%s+') and '\n' or ' ')
+	if ( #(item.summary or '') + #item.description ) ~= 0 then
+		local sep = #( item.summary or '' ) ~= 0 and #item.description ~= 0
+			and ( item.description:find( '^[:#*]+%s+' ) and '\n' or ' ' )
 			or  ''
-		local intro = (item.summary or '') .. sep .. item.description
-		stream:wikitext(':' .. intro:gsub('\n([:#*])', '\n:%1'):gsub('\n\n([^=])', '\n:%1')):newline()
+		local intro = ( item.summary or '' ) .. sep .. item.description
+		stream:wikitext( ':' .. intro:gsub( '\n([:#*])', '\n:%1' ):gsub( '\n\n([^=])', '\n:%1' ) ):newline()
 	end
 end
 
@@ -595,51 +595,51 @@ end
 --  @param              {table} options Configuration options.
 --  @param[opt]         {function} preop Item data preprocessor.
 --  @local
-local function render_tag(stream, name, tag, options, preop)
-	if preop then preop(tag, options) end
+local function render_tag ( stream, name, tag, options, preop )
+	if preop then preop( tag, options ) end
 	if tag.value then
-		type_reference(tag, options)
+		type_reference( tag, options )
 
-		local tag_name = msg('tag-' .. name, '1')
-		stream:wikitext(":'''" ..  tag_name .. "'''" .. msg('separator-semicolon') .. mw.text.trim(tag.value):gsub('\n([:#*])', '\n:%1'))
+		local tag_name = msg( 'tag-' .. name, '1' )
+		stream:wikitext( ":'''" ..  tag_name .. "'''" .. msg( 'separator-semicolon' ) .. mw.text.trim( tag.value ):gsub( '\n([:#*])', '\n:%1' ) )
 
-		if tag.value:find('\n[:#*]') and (tag.type or (tag.modifiers or {})['opt']) then
-			stream:newline():wikitext(':')
+		if tag.value:find( '\n[:#*]' ) and ( tag.type or ( tag.modifiers or {} )['opt'] ) then
+			stream:newline():wikitext( ':' )
 		end
 
-		if tag.type and (tag.modifiers or {})['opt'] then
-			stream:wikitext(msg('parentheses', tag.type .. msg('separator-colon') .. msg('optional') ))
+		if tag.type and ( tag.modifiers or {} )['opt'] then
+			stream:wikitext( msg( 'parentheses', tag.type .. msg( 'separator-colon' ) .. msg( 'optional' ) ))
 
 		elseif tag.type then
-			stream:wikitext(msg('parentheses', tag.type))
+			stream:wikitext( msg( 'parentheses', tag.type ) )
 
 		elseif (tag.modifiers or {})['opt'] then
-			stream:wikitext(msg('parentheses', msg('optional')))
+			stream:wikitext( msg( 'parentheses', msg( 'optional' ) ) )
 		end
 
 		stream:newline()
 
 	else
-		local tag_name = msg('tag-' .. name, tostring(#tag))
-		stream:wikitext(":'''" .. tag_name .. "'''" .. msg('separator-semicolon')):newline()
+		local tag_name = msg( 'tag-' .. name, tostring( #tag ) )
+		stream:wikitext( ":'''" .. tag_name .. "'''" .. msg( 'separator-semicolon' ) ):newline()
 
-		for _, tag_el in ipairs(tag) do
-			type_reference(tag_el, options)
+		for _, tag_el in ipairs( tag ) do
+			type_reference( tag_el, options )
 
-			stream:wikitext(':' .. (options.ulist and '*' or ':') .. tag_el.value:gsub('\n([:#*])', '\n::%1'))
+			stream:wikitext( ':' .. (options.ulist and '*' or ':') .. tag_el.value:gsub( '\n([:#*])', '\n::%1' ) )
 
-			if tag_el.value:find('\n[:#*]') and (tag_el.type or (tag_el.modifiers or {})['opt']) then
-				stream:newline():wikitext('::')
+			if tag_el.value:find( '\n[:#*]' ) and (tag_el.type or (tag_el.modifiers or {})['opt']) then
+				stream:newline():wikitext( '::' )
 			end
 	
 			if tag_el.type and (tag_el.modifiers or {})['opt'] then
-				stream:wikitext(msg('parentheses', tag_el.type .. msg('separator-colon') .. msg('optional') ))
+				stream:wikitext( msg( 'parentheses', tag_el.type .. msg( 'separator-colon' ) .. msg( 'optional' ) ) )
 
 			elseif tag_el.type then
-				stream:wikitext(msg('parentheses', tag_el.type))
+				stream:wikitext( msg( 'parentheses', tag_el.type ) )
 
 			elseif (tag_el.modifiers or {})['opt'] then
-				stream:wikitext(msg('parentheses', msg('optional')))
+				stream:wikitext( msg( 'parentheses', msg( 'optional' ) ) )
 			end
 
 			stream:newline()
@@ -653,7 +653,7 @@ end
 --  @param              {table} item Item documentation data.
 --  @param              {table} options Configuration options.
 --  @local
-local function preop_function_name(item, options)
+local function preop_function_name ( item, options )
 	local target = item.alias and 'alias' or 'name'
 
 	item[target] = item[target] .. '('
@@ -661,26 +661,26 @@ local function preop_function_name(item, options)
 	if
 		item.tags['param'] and
 		item.tags['param'].value and
-		not item.tags['param'].value:find('^[%w_]+[.[]')
+		not item.tags['param'].value:find( '^[%w_]+[.[]' )
 	then
 		if (item.tags['param'].modifiers or {})['opt'] then
 			item[target] = item[target] .. '<span style="opacity: 0.65;">'
 		end
 
-		item[target] = item[target] .. item.tags['param'].value:match('^(%S+)')
+		item[target] = item[target] .. item.tags['param'].value:match( '^(%S+)' )
 
 		if (item.tags['param'].modifiers or {})['opt'] then
 			item[target] = item[target] .. '</span>'
 		end
 
 	elseif item.tags['param'] then
-		for index, tag in ipairs(item.tags['param']) do
-			if not tag.value:find('^[%w_]+[.[]') then
+		for index, tag in ipairs( item.tags['param'] ) do
+			if not tag.value:find( '^[%w_]+[.[]' ) then
 				if (tag.modifiers or {})['opt'] then
 					item[target] = item[target] .. '<span style="opacity: 0.65;">'
 				end
 
-				item[target] = item[target] .. (index > 1 and ', ' or '') .. tag.value:match('^(%S+)')
+				item[target] = item[target] .. (index > 1 and ', ' or '') .. tag.value:match( '^(%S+)' )
 
 				if (tag.modifiers or {})['opt'] then
 					item[target] = item[target] .. '</span>'
@@ -698,20 +698,20 @@ end
 --  @param              {table} item Item documentation data.
 --  @param              {table} options Configuration options.
 --  @local
-local function preop_variable_prefix(item, options)
+local function preop_variable_prefix ( item, options )
 	local indent_symbol = options.ulist and '*' or ':'
 	local indent_level, indentation
 
 	if item.value then
-		indent_level = item.value:match('^%S+') == '...'
+		indent_level = item.value:match( '^%S+' ) == '...'
 			and 0
-			or  select(2, item.value:match('^%S+'):gsub('[.[]', ''))
-		indentation = indent_symbol:rep(indent_level)
-		item.value = indentation .. item.value:gsub('^(%S+)', '<code>%1</code>')
+			or  select(2, item.value:match( '^%S+' ):gsub( '[.[]', '' ) )
+		indentation = indent_symbol:rep( indent_level )
+		item.value = indentation .. item.value:gsub( '^(%S+)', '<code>%1</code>' )
 
 	elseif item then
-		for _, item_el in ipairs(item) do
-			preop_variable_prefix(item_el, options)
+		for _, item_el in ipairs( item ) do
+			preop_variable_prefix( item_el, options )
 		end
 	end
 end
@@ -722,27 +722,27 @@ end
 --  @param              {table} item Item documentation data.
 --  @param              {table} options Configuration options.
 --  @local
-local function preop_usage_highlight(item, options)
+local function preop_usage_highlight ( item, options )
 	if item.value then
-		item.value = unindent(mw.text.trim(item.value))
-		if item.value:find('^{{.+}}$') then
-			item.value = item.value:gsub('=', mw.text.nowiki)
+		item.value = unindent( mw.text.trim( item.value ) )
+		if item.value:find( '^{{.+}}$' ) then
+			item.value = item.value:gsub( '=', mw.text.nowiki )
 			local toptions = {}
-			toptions.invocation = item.value:match('^{{([^:]+)') == '#invoke'
-			toptions.multiline = item.value:match('^{{([^:]+)') == '#invoke'
+			toptions.invocation = item.value:match( '^{{([^:]+)' ) == '#invoke'
+			toptions.multiline = item.value:match( '^{{([^:]+)' ) == '#invoke'
 
 			if options.entrypoint then
-				item.value = item.value:gsub('^([^|]+)|%s*([^|}]-)(%s*)([|}])','%1|"%2"%3%4')
+				item.value = item.value:gsub( '^([^|]+)|%s*([^|}]-)(%s*)([|}])','%1|"%2"%3%4' )
 			end
 		 
-			item.value = item.value:match('^{{(.+))}}$')
-			item.value = template.main(item.value, toptions)
+			item.value = item.value:match( '^{{(.+))}}$' )
+			item.value = template.main( item.value, toptions )
 
-			local highlight_class = tonumber(mw.site.currentVersion:match('^%d%.%d+')) > 1.19
+			local highlight_class = tonumber( mw.site.currentVersion:match( '^%d%.%d+' ) ) > 1.19
 				and 'mw-highlight'
 				or  'mw-geshi'
 
-			if item.value:find('\n') then
+			if item.value:find( '\n' ) then
 				item.value = '<div class="'.. highlight_class .. ' mw-content-ltr" dir="ltr">' .. item.value .. '</div>'
 
 			else
@@ -751,15 +751,15 @@ local function preop_usage_highlight(item, options)
 
 		else
 			item.value =
-				(item.value:find('\n') and '' or '<span class="code">') ..
+				(item.value:find( '\n' ) and '' or '<span class="code">') ..
 				'<code style="all: unset;">' ..
 				'{{#tag:syntaxhighlight' ..
 				'|' .. item.value ..
 				'| lang    = lua' ..
-				'| enclose = ' .. (item.value:find('\n') and 'div' or 'none') ..
+				'| enclose = ' .. (item.value:find( '\n' ) and 'div' or 'none') ..
 				'}}' ..
 				'</code>' ..
-				(item.value:find('\n') and '' or '</span>')
+				(item.value:find( '\n' ) and '' or '</span>')
 		end
 
 	elseif item then
@@ -773,17 +773,17 @@ end
 --  Formats line numbers (`{#}`) in error tag values.
 --  @function           preop_error_line
 --  @param              {table} item Item documentation data.
-local function preop_error_line(item, options)
+local function preop_error_line ( item, options )
 	if item.name then
 		local line
 
 		for mod in pairs(item.modifiers or {}) do
-			if mod:find('^%d+$') then line = mod end
+			if mod:find( '^%d+$' ) then line = mod end
 		end
 
 		if line then
 			if item.type then
-				item.type = item.type .. msg('separator-colon') .. 'line ' .. line
+				item.type = item.type .. msg( 'separator-colon' ) .. 'line ' .. line
 
 			else
 				item.type = 'line ' .. line
@@ -803,26 +803,26 @@ end
 --  @function           moddoc.main
 --  @param              {table} f Scribunto frame object.
 --  @return             {string} Module documentation output.
-function moddoc.main(f)
+function moddoc.main ( f )
 	frame = f:getParent()
-	local modname = mw.text.trim(frame.args[1] or frame.args.file)
+	local modname = mw.text.trim( frame.args[1] or frame.args.file )
 
 	local options = {}
-	options.all = yesno(frame.args.all, false)
-	options.boilerplate = yesno(frame.args.boilerplate, false)
+	options.all = yesno( frame.args.all )
+	options.boilerplate = yesno( frame.args.boilerplate )
 	options.caption = frame.args.caption
-	options.code = yesno(frame.args.code, false)
-	options.colon = yesno(frame.args.colon, false)
+	options.code = yesno( frame.args.code )
+	options.colon = yesno( frame.args.colon )
 	options.image = frame.args.image
-	options.noluaref = yesno(frame.args.noluaref, false)
-	options.plain = yesno(frame.args.plain, false)
+	options.noluaref = yesno( frame.args.noluaref )
+	options.plain = yesno(frame.args.plain )
 	options.preface = frame.args.preface
-	options.simple = yesno(frame.args.simple, false)
-	options.sort = yesno(frame.args.sort, false)
-	options.strip = yesno(frame.args.strip, false)
-	options.ulist = yesno(frame.args.ulist, false)
+	options.simple = yesno( frame.args.simple )
+	options.sort = yesno( frame.args.sort )
+	options.strip = yesno( frame.args.strip )
+	options.ulist = yesno( frame.args.ulist )
 
-	return moddoc.build(modname, options)
+	return moddoc.build( modname, options )
 end
 
 --- Scribunto documentation generator entrypoint.
@@ -860,11 +860,11 @@ end
 --                      documentation.
 --  @param[opt]         {boolean} options.ulist Indent subitems as `<ul>`
 --                      lists (LDoc/JSDoc behaviour).
-function moddoc.build(modname, options)
+function moddoc.build ( modname, options )
 	modname = modname or title.text
 	options = options or {}
-	local tagdata = moddoc.taglet(modname, options)
-	local docdata = moddoc.doclet(tagdata, options)
+	local tagdata = moddoc.taglet( modname, options )
+	local docdata = moddoc.doclet( tagdata, options )
 	return docdata
 end
 
@@ -875,41 +875,41 @@ end
 --  @error[890]         {string} 'Lua source code not found in $1'
 --  @error[896]         {string} 'documentation markup for Docbunto not found in $1'
 --  @return             {table} Module documentation data.
-function moddoc.taglet(modname, options)
+function moddoc.taglet ( modname, options )
 	modname = modname or title.baseText
 	options = options or {}
 
 	local filepath = mw.site.namespaces[828].name .. ':' .. modname
-	local content = mw.title.new(filepath):getContent()
+	local content = mw.title.new( filepath ):getContent()
 
 	-- Content checks.
 	if not content then
-		error(msg('no-content', filepath))
+		error( msg( 'no-content', filepath ) )
 	end
 	if
-		not content:match('%-%-%-') and
-		not content:match(options.colon and '%s+%w+:' or '%s+@%w+')
+		not content:match( '%-%-%-' ) and
+		not content:match( options.colon and '%s+%w+:' or '%s+@%w+' )
 	then
-		error(msg('no-markup', filepath))
+		error( msg( 'no-markup', filepath ) )
 	end
 
 	-- Remove leading escapes.
-	content = content:gsub('^%-%-+%s*<[^>]+>\n', '')
+	content = content:gsub( '^%-%-+%s*<[^>]+>\n', '' )
 
 	-- Remove closing pretty comments.
-	content = content:gsub('\n%-%-%-%-%-+(\n[^-]+)', '\n-- %1')
+	content = content:gsub( '\n%-%-%-%-%-+(\n[^-]+)', '\n-- %1' )
 
 	-- Remove boilerplate block comments.
 	if options.boilerplate then
-		content = content:gsub('^%-%-%[=*%[\n.-\n%-?%-?%]%=*]%-?%-?%s+', '')
-		content = content:gsub('%s+%-%-%[=*%[\n.-\n%-?%-?%]%=*]%-?%-?$', '')
+		content = content:gsub( '^%-%-%[=*%[\n.-\n%-?%-?%]%=*]%-?%-?%s+', '' )
+		content = content:gsub( '%s+%-%-%[=*%[\n.-\n%-?%-?%]%=*]%-?%-?$', '' )
 	end
 
 	-- Configure patterns (and colon mode).
-	configure_patterns(options)
+	configure_patterns( options )
 
 	-- Content lexing.
-	local lines = lexer(content)
+	local lines = lexer( content )
 	local tokens = {}
 	local dummy_token = {
 		data = '',
@@ -917,18 +917,18 @@ function moddoc.taglet(modname, options)
 		posLast = 1
 	}
 	local token_closure = 0
-	for _, line in ipairs(lines) do
+	for _, line in ipairs( lines ) do
 		if #line == 0 then
 			dummy_token.type = token_closure == 0
 				and 'whitespace'
 				or  tokens[#tokens].type
-			table.insert(tokens, mw.clone(dummy_token))
+			table.insert( tokens, mw.clone( dummy_token ) )
 		else
-			for _, token in ipairs(line) do
-				 if token.data:find('^%[=*%[$') or token.data:find('^%-%-%[=*%[$') then
+			for _, token in ipairs( line ) do
+				 if token.data:find( '^%[=*%[$' ) or token.data:find( '^%-%-%[=*%[$' ) then
 					token_closure = 1
 				end
-				if token.data:find(']=*]') then
+				if token.data:find( ']=*]' ) then
 					token_closure = 0
 				end
 				table.insert(tokens, token)
@@ -968,20 +968,20 @@ function moddoc.taglet(modname, options)
 
 	while t do
 		-- Taglet variable update.
-		new_item = t.data:find('^%-%-%-') or t.data:find('^%-%-%[%[$')
-		comment_tail = t.data:gsub('^%-%-+', '')
-		tag_name = comment_tail:match(DOCBUNTO_TAG)
+		new_item = t.data:find( '^%-%-%-' ) or t.data:find( '^%-%-%[%[$' )
+		comment_tail = t.data:gsub( '^%-%-+', '' )
+		tag_name = comment_tail:match( DOCBUNTO_TAG )
 		tag_name = moddoc.tags._alias[tag_name] or tag_name
 		new_tag = moddoc.tags[tag_name]
 		pretty_comment =
-			t.data:find('^%-+$')           or
-			t.data:find('[^-]+%-%-+%s*$')  or
-			t.data:find('</?nowiki>')      or
-			t.data:find('</?pre>')
+			t.data:find( '^%-+$' )           or
+			t.data:find( '[^-]+%-%-+%s*$' )  or
+			t.data:find( '</?nowiki>' )      or
+			t.data:find( '</?pre>' )
 		comment_brace =
-			t.data:find('^%-%-%[%[$') or
-			t.data:find('^%-%-%]%]$') or
-			t.data:find('^%]%]%-%-$')
+			t.data:find( '^%-%-%[%[$' ) or
+			t.data:find( '^%-%-%]%]$' ) or
+			t.data:find( '^%]%]%-%-$' )
 		pragma_mode = tag_name == 'pragma'
 		export_mode = tag_name == 'export'
 		special_tag = pragma_mode or export_mode
@@ -1001,7 +1001,7 @@ function moddoc.taglet(modname, options)
 				table.insert(documentation.comments, t.data)
 
 				if comment_mode and not new_tag and not doctag_mode and not comment_brace and not pretty_comment then
-					sep = mw.text.trim(comment_tail):find('^[:#*=]+%s+')
+					sep = mw.text.trim(comment_tail):find( '^[:#*=]+%s+' )
 						and '\n'
 						or  (#documentation.description ~= 0 and ' ' or '')
 					documentation.description = documentation.description .. sep .. mw.text.trim(comment_tail)
@@ -1014,7 +1014,7 @@ function moddoc.taglet(modname, options)
 				elseif doctag_mode and not comment_brace and not pretty_comment then
 					tags = documentation.tags
 					if moddoc.tags[tags[#tags].name] == TAG_MULTI then
-						sep = mw.text.trim(comment_tail):find('^[:#*=]+%s+')
+						sep = mw.text.trim(comment_tail):find( '^[:#*=]+%s+' )
 							and '\n'
 							or  ' '
 						tags[#tags].value = tags[#tags].value .. sep .. mw.text.trim(comment_tail)
@@ -1036,7 +1036,7 @@ function moddoc.taglet(modname, options)
 			end
 
 			if not start_mode and comment_mode and not new_tag and not doctag_mode and not comment_brace and not pretty_comment then
-				sep = mw.text.trim(comment_tail):find('^[:#*]+%s+')
+				sep = mw.text.trim(comment_tail):find( '^[:#*]+%s+' )
 					and '\n'
 					or  (#documentation.items[item_no].description ~= 0 and ' ' or '')
 				documentation.items[item_no].description =
@@ -1052,7 +1052,7 @@ function moddoc.taglet(modname, options)
 			elseif not start_mode and doctag_mode and not comment_brace and not pretty_comment then
 				tags = documentation.items[item_no].tags
 				if moddoc.tags[tags[#tags].name] == TAG_MULTI then
-					sep = mw.text.trim(comment_tail):find('^[:#*=]+%s+')
+					sep = mw.text.trim(comment_tail):find( '^[:#*=]+%s+' )
 						and '\n'
 						or  ' '
 					tags[#tags].value = tags[#tags].value .. sep .. mw.text.trim(comment_tail)
@@ -1145,10 +1145,10 @@ function moddoc.taglet(modname, options)
 				documentation.info = extract_info(documentation)
 				documentation.type = extract_type(documentation) or 'module'
 				if #documentation.description ~= 0 then
-					documentation.summary = documentation.description:match('^[^.]+[.۔。෴։።]?')
-					documentation.description = documentation.description:gsub('^[^.]+[.۔。෴։።]?%s*', '')
+					documentation.summary = documentation.description:match( '^[^.]+[.۔。෴։።]?' )
+					documentation.description = documentation.description:gsub( '^[^.]+[.۔。෴։።]?%s*', '' )
 				end
-				documentation.description = documentation.description:gsub('%s%s+', '\n\n')
+				documentation.description = documentation.description:gsub( '%s%s+', '\n\n' )
 				documentation.executable = moddoc.tags._code_types[documentation.type] and true or false
 				correct_subitem_tag(documentation)
 				override_item_tag(documentation, 'name')
@@ -1164,10 +1164,10 @@ function moddoc.taglet(modname, options)
 				documentation.items[item_no].name = extract_name(documentation.items[item_no])
 				documentation.items[item_no].type = extract_type(documentation.items[item_no])
 				if #documentation.items[item_no].description ~= 0 then
-					documentation.items[item_no].summary = documentation.items[item_no].description:match('^[^.]+[.۔。෴։።]?')
-					documentation.items[item_no].description = documentation.items[item_no].description:gsub('^[^.]+[.۔。෴։።]?%s*', '')
+					documentation.items[item_no].summary = documentation.items[item_no].description:match( '^[^.]+[.۔。෴։።]?' )
+					documentation.items[item_no].description = documentation.items[item_no].description:gsub( '^[^.]+[.۔。෴։።]?%s*', '' )
 				end
-				documentation.items[item_no].description = documentation.items[item_no].description:gsub('%s%s+', '\n\n')
+				documentation.items[item_no].description = documentation.items[item_no].description:gsub( '%s%s+', '\n\n' )
 				new_item_code = true
 			end
 
@@ -1189,7 +1189,7 @@ function moddoc.taglet(modname, options)
 			sep = #documentation.items[item_no].code ~= 0 and t.posFirst == 1 and '\n' or ''
 			documentation.items[item_no].code = documentation.items[item_no].code .. sep .. t.data
 			-- Code analysis on item head.
-			if new_item_code and documentation.items[item_no].code:find('\n') then
+			if new_item_code and documentation.items[item_no].code:find( '\n' ) then
 				code_static_analysis(documentation.items[item_no])
 				new_item_code = false
 			end
@@ -1204,20 +1204,20 @@ function moddoc.taglet(modname, options)
 	local export_ptn = '^' .. package_name .. '[.[]'
 
 	for _, item in ipairs(documentation.items) do
-		if item.name == 'p' or item.name:match('^p[.[]') then
-			item.alias = item.name:gsub('^p([.[]?)', documentation.name .. '%1')
+		if item.name == 'p' or item.name:match( '^p[.[]' ) then
+			item.alias = item.name:gsub( '^p([.[]? )', documentation.name .. '%1')
 		end
 		if
 			item.name == package_name or
-			item.name:find(export_ptn) or
-			(item.alias or ''):find(export_ptn)
+			item.name:find( export_ptn ) or
+			(item.alias or ''):find( export_ptn )
 		then
 			item.export = true
 		end
-		if item.name:find('[.:]') or item.name:find('%[[\'"]') then
-			item.hierarchy = mw.text.split((item.name:gsub('["\']?%]', '')), '[.:%[\'""]+')
+		if item.name:find( '[.:]' ) or item.name:find( '%[[\'"]' ) then
+			item.hierarchy = mw.text.split((item.name:gsub( '["\']?%]', '' )), '[.:%[\'""]+')
 		end
-		item.type = item.type or ((item.alias or item.name):find('[.[]') and 'member' or 'variable')
+		item.type = item.type or ((item.alias or item.name):find( '[.[]' ) and 'member' or 'variable')
 		correct_subitem_tag(item)
 		override_item_tag(item, 'name')
 		override_item_tag(item, 'alias')
@@ -1261,10 +1261,10 @@ end
 --  @param              {table} data Taglet documentation data.
 --  @param[opt]         {table} options Configuration options.
 --  @return             {string} Wikitext documentation output.
-function moddoc.doclet(data, options)
+function moddoc.doclet ( data, options )
 	local documentation = mw.html.create()
 	local namespace = '^' .. mw.site.namespaces[828].name .. ':'
-	local codepage = data.filename:gsub(namespace, '')
+	local codepage = data.filename:gsub( namespace, '' )
 
 	options = options or {}
 	_options = options
@@ -1273,7 +1273,7 @@ function moddoc.doclet(data, options)
 	local maybe_md = options.plain and tostring or markdown
 
 	-- Detect Module:Entrypoint for usage formatting.
-	options.entrypoint = data.code:find('require[ (]*["\'][MD]%w+:Entrypoint[\'"]%)?')
+	options.entrypoint = data.code:find( 'require[ (]*["\'][MD]%w+:Entrypoint[\'"]% )?')
 
 	-- Disable edit sections for automatic documentation pages.
 	if not options.code then
@@ -1281,18 +1281,18 @@ function moddoc.doclet(data, options)
 	end
 
 	-- Documentation lede.
-	if not options.code and (#(data.summary or '') + #data.description) ~= 0 then
+	if not options.code and ( #( data.summary or '' ) + #data.description ) ~= 0 then
 		local sep = #data.summary ~= 0 and #data.description ~= 0
-			and (data.description:find('^[:#*=]+%s+') and '\n\n' or ' ')
+			and ( data.description:find( '^[:#*=]+%s+' ) and '\n\n' or ' ' )
 			or  ''
-		local intro = (data.summary or '') .. sep .. data.description
-		intro = frame:preprocess(maybe_md(intro:gsub('^(' .. codepage .. ')', '<b>%1</b>')))
-		documentation:wikitext(intro):newline():newline()
+		local intro = ( data.summary or '' ) .. sep .. data.description
+		intro = frame:preprocess( maybe_md( intro:gsub( '^(' .. codepage .. ' )', '<b>%1</b>' ) ) )
+		documentation:wikitext( intro ):newline():newline()
 	end
 
 	-- Custom documentation preface.
 	if options.preface then
-		documentation:wikitext(options.preface):newline():newline()
+		documentation:wikitext( options.preface ):newline():newline()
 	end
 
 	-- Start code documentation.
@@ -1305,24 +1305,24 @@ function moddoc.doclet(data, options)
 			and 'function'
 			or  'items'
 	if not options.code or options.preface then
-		codedoc:wikitext('== ' .. msg('header-documentation') .. ' =='):newline()
+		codedoc:wikitext( '== ' .. msg( 'header-documentation' ) .. ' =='):newline()
 	end
-	codedoc:wikitext('=== ' .. msg('header-' .. header_type) .. ' ==='):newline()
+	codedoc:wikitext( '=== ' .. msg( 'header-' .. header_type ) .. ' ==='):newline()
 
 	-- Function module support.
 	if function_module then
 		data.type = 'function'
 		if not options.code then data.description = '' end
-		render_item(codedoc, data, options, preop_function_name)
+		render_item( codedoc, data, options, preop_function_name )
 
 		if not options.simple and data.tags['param'] then
-			render_tag(codedoc, 'param', data.tags['param'], options, preop_variable_prefix)
+			render_tag( codedoc, 'param', data.tags['param'], options, preop_variable_prefix )
 		end
 		if not options.simple and data.tags['error'] then
-			render_tag(codedoc, 'error', data.tags['error'], options, preop_error_line)
+			render_tag( codedoc, 'error', data.tags['error'], options, preop_error_line )
 		end
 		if not options.simple and data.tags['return'] then
-			render_tag(codedoc, 'return', data.tags['return'], options)
+			render_tag( codedoc, 'return', data.tags['return'], options )
 		end
 	end
 
@@ -1340,16 +1340,16 @@ function moddoc.doclet(data, options)
 			not other_header and item.type ~= 'section' and item.type ~= 'type' and
 			not item.export and not item.hierarchy and not inaccessible
 		then
-			codedoc:wikitext('=== ' .. msg('header-other') .. ' ==='):newline()
+			codedoc:wikitext('=== ' .. msg( 'header-other' ) .. ' ==='):newline()
 			other_header = true
 		end
 		if not private_header and options.all and inaccessible then
-			codedoc:wikitext('=== ' .. msg('header-private') ..  '==='):newline()
+			codedoc:wikitext('=== ' .. msg( 'header-private' ) ..  '==='):newline()
 			private_header = true
 		end
 
 		if item.type == 'section' then
-			codedoc:wikitext('=== ' .. (item.summary or item.alias or item.name):gsub('[.۔。෴։።]$', '') .. ' ==='):newline()
+			codedoc:wikitext('=== ' .. (item.summary or item.alias or item.name):gsub( '[.۔。෴։።]$', '' ) .. ' ==='):newline()
 			if #item.description ~= 0 then
 				codedoc:wikitext(item.description):newline()
 			end
@@ -1358,53 +1358,53 @@ function moddoc.doclet(data, options)
 			codedoc:wikitext('=== <code>' .. (item.alias or item.name) .. '</code> ==='):newline()
 			if (#(item.summary or '') + #item.description) ~= 0 then
 				local sep = #(item.summary or '') ~= 0 and #item.description ~= 0
-					and (item.description:find('^[:#*=]+%s+') and '\n\n' or ' ')
+					and (item.description:find( '^[:#*=]+%s+' ) and '\n\n' or ' ')
 					or  ''
 				codedoc:wikitext((item.summary or '') .. sep .. item.description):newline()
 			end
 
 		elseif item.type == 'function' then
-			render_item(codedoc, item, options, preop_function_name)
+			render_item( codedoc, item, options, preop_function_name )
 			if not options.simple and item.tags['param'] then
-				render_tag(codedoc, 'param', item.tags['param'], options, preop_variable_prefix)
+				render_tag( codedoc, 'param', item.tags['param'], options, preop_variable_prefix )
 			end
 			if not options.simple and item.tags['error'] then
-				render_tag(codedoc, 'error', item.tags['error'], options, preop_error_line)
+				render_tag( codedoc, 'error', item.tags['error'], options, preop_error_line )
 			end
 			if not options.simple and item.tags['return'] then
-				render_tag(codedoc, 'return', item.tags['return'], options)
+				render_tag( codedoc, 'return', item.tags['return'], options )
 			end
 
 		elseif
 			item.type == 'table' or
-			item.type:find('^member') or
-			item.type:find('^variable')
+			item.type:find( '^member' ) or
+			item.type:find( '^variable' )
 
 		then
-			render_item(codedoc, item, options)
+			render_item( codedoc, item, options )
 			if not options.simple and item.tags['field'] then
-				render_tag(codedoc, 'field', item.tags['field'], options, preop_variable_prefix)
+				render_tag( codedoc, 'field', item.tags['field'], options, preop_variable_prefix )
 			end
 		end
 
 		if item.type ~= 'section' and item.type ~= 'type' then
 			if not options.simple and item.tags['note'] then
-				render_tag(codedoc, 'note', item.tags['note'], options)
+				render_tag( codedoc, 'note', item.tags['note'], options )
 			end
 			if not options.simple and item.tags['warning'] then
-				render_tag(codedoc, 'warning', item.tags['warning'], options)
+				render_tag( codedoc, 'warning', item.tags['warning'], options )
 			end
 			if not options.simple and item.tags['fixme'] then
-				render_tag(codedoc, 'fixme', item.tags['fixme'], options)
+				render_tag( codedoc, 'fixme', item.tags['fixme'], options )
 			end
 			if not options.simple and item.tags['todo'] then
-				render_tag(codedoc, 'todo', item.tags['todo'], options)
+				render_tag( codedoc, 'todo', item.tags['todo'], options )
 			end
 			if not options.simple and item.tags['usage'] then
-				render_tag(codedoc, 'usage', item.tags['usage'], options, preop_usage_highlight)
+				render_tag( codedoc, 'usage', item.tags['usage'], options, preop_usage_highlight )
 			end
 			if not options.simple and item.tags['see'] then
-				render_tag(codedoc, 'see', item.tags['see'], options)
+				render_tag( codedoc, 'see', item.tags['see'], options )
 			end
 		end
 	end
@@ -1412,30 +1412,30 @@ function moddoc.doclet(data, options)
 	-- Render module-level annotations.
 	local header_paren = options.code and '===' or '=='
 	local header_text
-	for _, tag_name in ipairs{'warning', 'fixme', 'note', 'todo', 'see'} do
+	for _, tag_name in ipairs{ 'warning', 'fixme', 'note', 'todo', 'see' } do
 		if data.tags[tag_name] then
-			header_text =  msg('tag-' .. tag_name, data.tags[tag_name].value and '1' or '2')
+			header_text =  msg( 'tag-' .. tag_name, data.tags[tag_name].value and '1' or '2' )
 			header_text = header_paren .. ' ' .. header_text .. ' ' .. header_paren
-			codedoc:newline():wikitext(header_text):newline()
+			codedoc:newline():wikitext( header_text ):newline()
 			if data.tags[tag_name].value then
-				codedoc:wikitext(data.tags[tag_name].value):newline()
+				codedoc:wikitext( data.tags[tag_name].value ):newline()
 			else
-				for _, tag_el in ipairs(data.tags[tag_name]) do
-					codedoc:wikitext('* ' .. tag_el.value):newline()
+				for _, tag_el in ipairs( data.tags[tag_name] ) do
+					codedoc:wikitext( '* ' .. tag_el.value ):newline()
 				end
 			end
 		end
 	end
 
 	-- Add nowiki tags for EOF termination in tests.
-	codedoc:tag('nowiki', { selfClosing = true })
+	codedoc:tag( 'nowiki', { selfClosing = true } )
 
 	-- Code documentation formatting.
-	codedoc = maybe_md(tostring(codedoc))
-	codedoc = frame:preprocess(codedoc)
+	codedoc = maybe_md( tostring( codedoc ) )
+	codedoc = frame:preprocess( codedoc )
 
-	documentation:wikitext(codedoc)
-	documentation = tostring(documentation)
+	documentation:wikitext( codedoc )
+	documentation = tostring( documentation )
 	return documentation
 end
 
