@@ -1,10 +1,10 @@
---- Docbunto automatic documentation generator for Scribunto modules.
+--- ModDoc automatic documentation generator for Scribunto modules.
 --  The module is based on LuaDoc and LDoc. It produces documentation in
 --  the form of MediaWiki markup, using `@tag`-prefixed comments embedded
 --  in the source code of a Scribunto module. The taglet parser & doclet
---  renderer Docbunto uses are also publicly exposed to other modules.
+--  renderer ModDoc uses are also publicly exposed to other modules.
 --  
---  Docbunto code items are introduced by a block comment (`--[[]]--`), an
+--  ModDoc code items are introduced by a block comment (`--[[]]--`), an
 --  inline comment with three hyphens (`---`), or a inline `@tag` comment.
 --  The module can use static code analysis to infer variable names, item
 --  privacy (`local` keyword), tables (`{}` constructor) and functions
@@ -12,20 +12,18 @@
 --  
 --  Items are usually rendered in the order they are defined, if they are
 --  public items, or emulated classes extending the Lua primitives. There
---  are many customisation options available to change Docbunto behaviour.
+--  are many customisation options available to change ModDoc behaviour.
 --  
---  @module             docbunto
---  @alias              p
---  @require            Module:Lexer
---  @require            Module:T
---  @require            Module:Unindent
---  @require            Module:Yesno
---  @image              Docbunto.svg
---  @author             [[User:Siroopwafel|Siroopwafel]]
+--  @module             moddoc
+--  @alias              mw.ext.moddoc
+--  @require            moddoc/lexer
+--  @require            moddoc/template
+--  @require            moddoc/unindent
+--  @author             [[mediawiki:User:Jeblad|Jeblad]]
+--  @author             [[mediawiki:User:LMN8|LMN8]]
 --  @attribution        [[github:stevedonovan|@stevedonovan]] ([[github:stevedonovan/LDoc|Github]])
---  @release            beta
 --  <nowiki>
-local p = {}
+local moddoc = {}
 
 --  Module dependencies.
 local title = mw.title.getCurrentTitle()
@@ -122,9 +120,9 @@ local function process_tag(str)
 
 	tag.value = mw.text.trim(tag.value)
 
-	if p.tags._type_alias[tag.name] then
-		if p.tags._type_alias[tag.name] ~= 'variable' then
-			tag.value = p.tags._type_alias[tag.name] .. ' ' .. tag.value
+	if moddoc.tags._type_alias[tag.name] then
+		if moddoc.tags._type_alias[tag.name] ~= 'variable' then
+			tag.value = moddoc.tags._type_alias[tag.name] .. ' ' .. tag.value
 			tag.name = 'field'
 		end
 
@@ -133,7 +131,7 @@ local function process_tag(str)
 		end
 	end
 
-	tag.name = p.tags._alias[tag.name] or tag.name
+	tag.name = moddoc.tags._alias[tag.name] or tag.name
 
 	if tag.name ~= 'usage' and tag.value:find(DOCBUNTO_TYPE) then
 		tag.type = tag.value:match(DOCBUNTO_TYPE)
@@ -143,7 +141,7 @@ local function process_tag(str)
 		tag.value = tag.value:gsub(DOCBUNTO_TYPE, '')
 	end
 
-	if p.tags[tag.name] == TAG_FLAG then
+	if moddoc.tags[tag.name] == TAG_FLAG then
 		tag.value = true
 	end
 
@@ -159,7 +157,7 @@ local function extract_info(documentation)
 	local info = {}
 
 	for _, tag in ipairs(documentation.tags) do
-		if p.tags._module_info[tag.name] then
+		if moddoc.tags._module_info[tag.name] then
 			if info[tag.name] then
 				if not info[tag.name]:find('^%* ') then
 					info[tag.name] = '* ' .. info[tag.name]
@@ -183,7 +181,7 @@ end
 local function extract_type(item)
 	local item_type
 	for _, tag in ipairs(item.tags) do
-		if p.tags[tag.name] == TAG_TYPE then
+		if moddoc.tags[tag.name] == TAG_TYPE then
 			item_type = tag.name
 
 			if tag.name == 'variable' then
@@ -192,7 +190,7 @@ local function extract_type(item)
 				item.tags['local'] = implied_local
 			end
 
-			if p.tags._generic_tags[item_type] and not p.tags._project_level[item_type] and tag.type then
+			if moddoc.tags._generic_tags[item_type] and not moddoc.tags._project_level[item_type] and tag.type then
 				item_type = item_type .. msg('separator-colon') .. tag.type
 			end
 			break
@@ -211,7 +209,7 @@ local function extract_name(item, opts)
 	opts = opts or {}
 	local item_name
 	for _, tag in ipairs(item.tags) do
-		if p.tags[tag.name] == TAG_TYPE then
+		if moddoc.tags[tag.name] == TAG_TYPE then
 			item_name = tag.value; break;
 		end
 	end
@@ -353,7 +351,7 @@ local function export_item(documentation, name, item_no, alias, factory)
 			item.tags['private'] = nil
 
 			for index, tag in ipairs(item.tags) do
-				if p.tags._privacy_tags[tag.name] then
+				if moddoc.tags._privacy_tags[tag.name] then
 					table.remove(item.tags, index)
 				end
 			end
@@ -514,7 +512,7 @@ local function type_reference(item, options)
 		elseif
 			not options.noluaref and
 			not t:find('^line') and
-			not p.tags._generic_tags[t]
+			not moddoc.tags._generic_tags[t]
 		then
 			types[index] = '[[#' .. t .. '|' .. name .. ']]'
 		end
@@ -802,10 +800,10 @@ end
 --  Docbunto package items.
 
 --- Template entrypoint for [[Template:Docbunto]].
---  @function           p.main
+--  @function           moddoc.main
 --  @param              {table} f Scribunto frame object.
 --  @return             {string} Module documentation output.
-function p.main(f)
+function moddoc.main(f)
 	frame = f:getParent()
 	local modname = mw.text.trim(frame.args[1] or frame.args.file)
 
@@ -824,11 +822,11 @@ function p.main(f)
 	options.strip = yesno(frame.args.strip, false)
 	options.ulist = yesno(frame.args.ulist, false)
 
-	return p.build(modname, options)
+	return moddoc.build(modname, options)
 end
 
 --- Scribunto documentation generator entrypoint.
---  @function           p.build
+--  @function           moddoc.build
 --  @param[opt]         {string} modname Module page name (without namespace).
 --                      Default: second-level subpage.
 --  @param[opt]         {table} options Configuration options.
@@ -862,24 +860,22 @@ end
 --                      documentation.
 --  @param[opt]         {boolean} options.ulist Indent subitems as `<ul>`
 --                      lists (LDoc/JSDoc behaviour).
-function p.build(modname, options)
-	modname = modname or title.rootText == 'Global Lua Modules'
-		and mw.text.split(title.text, '/')[2]
-		or  title.text
+function moddoc.build(modname, options)
+	modname = modname or title.text
 	options = options or {}
-	local tagdata = p.taglet(modname, options)
-	local docdata = p.doclet(tagdata, options)
+	local tagdata = moddoc.taglet(modname, options)
+	local docdata = moddoc.doclet(tagdata, options)
 	return docdata
 end
 
 --- Docbunto taglet parser for Scribunto modules.
---  @function           p.taglet
+--  @function           moddoc.taglet
 --  @param[opt]         {string} modname Module page name (without namespace).
 --  @param[opt]         {table} options Configuration options.
 --  @error[890]         {string} 'Lua source code not found in $1'
 --  @error[896]         {string} 'documentation markup for Docbunto not found in $1'
 --  @return             {table} Module documentation data.
-function p.taglet(modname, options)
+function moddoc.taglet(modname, options)
 	modname = modname or title.baseText
 	options = options or {}
 
@@ -975,8 +971,8 @@ function p.taglet(modname, options)
 		new_item = t.data:find('^%-%-%-') or t.data:find('^%-%-%[%[$')
 		comment_tail = t.data:gsub('^%-%-+', '')
 		tag_name = comment_tail:match(DOCBUNTO_TAG)
-		tag_name = p.tags._alias[tag_name] or tag_name
-		new_tag = p.tags[tag_name]
+		tag_name = moddoc.tags._alias[tag_name] or tag_name
+		new_tag = moddoc.tags[tag_name]
 		pretty_comment =
 			t.data:find('^%-+$')           or
 			t.data:find('[^-]+%-%-+%s*$')  or
@@ -1017,12 +1013,12 @@ function p.taglet(modname, options)
 
 				elseif doctag_mode and not comment_brace and not pretty_comment then
 					tags = documentation.tags
-					if p.tags[tags[#tags].name] == TAG_MULTI then
+					if moddoc.tags[tags[#tags].name] == TAG_MULTI then
 						sep = mw.text.trim(comment_tail):find('^[:#*=]+%s+')
 							and '\n'
 							or  ' '
 						tags[#tags].value = tags[#tags].value .. sep .. mw.text.trim(comment_tail)
-					elseif p.tags[tags[#tags].name] == TAG_MULTI_LINE then
+					elseif moddoc.tags[tags[#tags].name] == TAG_MULTI_LINE then
 						tags[#tags].value = tags[#tags].value .. '\n' .. comment_tail
 					end
 				end
@@ -1055,12 +1051,12 @@ function p.taglet(modname, options)
 
 			elseif not start_mode and doctag_mode and not comment_brace and not pretty_comment then
 				tags = documentation.items[item_no].tags
-				if p.tags[tags[#tags].name] == TAG_MULTI then
+				if moddoc.tags[tags[#tags].name] == TAG_MULTI then
 					sep = mw.text.trim(comment_tail):find('^[:#*=]+%s+')
 						and '\n'
 						or  ' '
 					tags[#tags].value = tags[#tags].value .. sep .. mw.text.trim(comment_tail)
-				elseif p.tags[tags[#tags].name] == TAG_MULTI_LINE then
+				elseif moddoc.tags[tags[#tags].name] == TAG_MULTI_LINE then
 					tags[#tags].value = tags[#tags].value .. '\n' .. comment_tail
 				end
 			end
@@ -1153,7 +1149,7 @@ function p.taglet(modname, options)
 					documentation.description = documentation.description:gsub('^[^.]+[.۔。෴։።]?%s*', '')
 				end
 				documentation.description = documentation.description:gsub('%s%s+', '\n\n')
-				documentation.executable = p.tags._code_types[documentation.type] and true or false
+				documentation.executable = moddoc.tags._code_types[documentation.type] and true or false
 				correct_subitem_tag(documentation)
 				override_item_tag(documentation, 'name')
 				override_item_tag(documentation, 'alias')
@@ -1261,11 +1257,11 @@ function p.taglet(modname, options)
 end
 
 --- Doclet renderer for Docbunto taglet data.
---  @function           p.doclet
+--  @function           moddoc.doclet
 --  @param              {table} data Taglet documentation data.
 --  @param[opt]         {table} options Configuration options.
 --  @return             {string} Wikitext documentation output.
-function p.doclet(data, options)
+function moddoc.doclet(data, options)
 	local documentation = mw.html.create()
 	local namespace = '^' .. mw.site.namespaces[828].name .. ':'
 	local codepage = data.filename:gsub(namespace, '')
@@ -1451,8 +1447,8 @@ end
 --   * Single-line tags use the `'S'` token.
 --   * Flags use the `'N'` token.
 --   * Type tags use the `'T'` token.
---  @table              p.tags
-p.tags = {
+--  @table              moddoc.tags
+moddoc.tags = {
 	-- Item-level tags, available for global use.
 	['param'] = 'M', ['see'] = 'M', ['note'] = 'M', ['usage'] = 'ML',
 	['description'] = 'M', ['field'] = 'M', ['return'] = 'M',
@@ -1471,7 +1467,7 @@ p.tags = {
 	['function'] = 'T', ['table'] = 'T', ['member'] = 'T', ['variable'] = 'T',
 	['section'] = 'T', ['type'] = 'T';
 }
-p.tags._alias = {
+moddoc.tags._alias = {
 	-- Normal aliases.
 	['about']       = 'summary',
 	['abstract']    = 'summary',
@@ -1501,7 +1497,7 @@ p.tags._alias = {
 	['tparam']      = 'param',
 	['treturn']     = 'return'
 }
-p.tags._type_alias = {
+moddoc.tags._type_alias = {
 	-- Implicit type value alias.
 	['bool']        = 'boolean',
 	['func']        = 'function',
@@ -1515,7 +1511,7 @@ p.tags._type_alias = {
 	['tparam']      = 'variable',
 	['treturn']     = 'variable'
 }
-p.tags._project_level = {
+moddoc.tags._project_level = {
 	-- Contains code.
 	['module']      = true,
 	['script']      = true,
@@ -1526,12 +1522,12 @@ p.tags._project_level = {
 	['topic']       = true,
 	['example']     = true
 }
-p.tags._code_types = {
+moddoc.tags._code_types = {
 	['module']      = true,
 	['script']      = true,
 	['classmod']    = true
 }
-p.tags._module_info = {
+moddoc.tags._module_info = {
 	['image']       = true,
 	['caption']     = true,
 	['release']     = true,
@@ -1543,20 +1539,24 @@ p.tags._module_info = {
 	['attribution'] = true,
 	['demo']        = true
 }
-p.tags._annotation_tags = {
+moddoc.tags._annotation_tags = {
 	['warning']     = true,
 	['fixme']       = true,
 	['note']        = true,
 	['todo']        = true,
 	['see']         = true
 }
-p.tags._privacy_tags = {
+moddoc.tags._privacy_tags = {
 	['private']     = true,
 	['local']       = true
 }
-p.tags._generic_tags = {
+moddoc.tags._generic_tags = {
 	['variable']    = true,
 	['member']      = true
 }
 
-return p
+--  Expose extension.
+mw = mw or {}
+mw.ext = mw.ext or {}
+mw.ext.moddoc = moddoc
+return moddoc
