@@ -538,7 +538,7 @@ local function markdown ( str )
 	str = str:gsub( '%*([^\n*]+)%*', '<i>%1</i>' )
 
 	-- Self-closing header support.
-	str = str:gsub( '\n?(#+) *([^\n#]+) *#+%s', markdown_header )
+	str = str:gsub( '%f[^\n](#+) *([^\n#]+) *#+%s', markdown_header )
 
 	-- External and internal links.
 	str = str:gsub( '%[([^\n]+)%]%(([^\n][^\n]-)%)', '[%2 %1]' )
@@ -601,7 +601,7 @@ local function render_tag ( stream, name, tag, options, preop )
 		type_reference( tag, options )
 
 		local tag_name = msg( 'tag-' .. name, '1' )
-		stream:wikitext( ":'''" ..  tag_name .. "'''" .. msg( 'separator-semicolon' ) .. mw.text.trim( tag.value ):gsub( '\n([:#*])', '\n:%1' ) )
+		stream:wikitext( ':<b>' .. tag_name .. '</b>' .. msg( 'separator-semicolon' ) .. mw.text.trim( tag.value ):gsub( '\n([:#*])', '\n:%1' ) )
 
 		if tag.value:find( '\n[:#*]' ) and ( tag.type or ( tag.modifiers or {} )['opt'] ) then
 			stream:newline():wikitext( ':' )
@@ -621,7 +621,7 @@ local function render_tag ( stream, name, tag, options, preop )
 
 	else
 		local tag_name = msg( 'tag-' .. name, tostring( #tag ) )
-		stream:wikitext( ":'''" .. tag_name .. "'''" .. msg( 'separator-semicolon' ) ):newline()
+		stream:wikitext( ':<b>' .. tag_name .. '</b>' .. msg( 'separator-semicolon' ) ):newline()
 
 		for _, tag_el in ipairs( tag ) do
 			type_reference( tag_el, options )
