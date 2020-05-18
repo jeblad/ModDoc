@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Rail"
+		]
+	},
+	"moddoc-desc": "Dodaje dokumentację Lua w stylu LDoc dla modułów"
+}

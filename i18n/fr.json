@@ -4,5 +4,5 @@
 			"Wladek92"
 		]
 	},
-	"moddoc-desc": "Fournit la documentation des modules en format LuaDoc"
+	"moddoc-desc": "Fournit la documentation Lua des modules en format LDoc"
 }

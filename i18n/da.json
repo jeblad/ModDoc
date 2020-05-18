@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Jeblad"
+			"Jeblad",
+			"Saederup92"
 		]
 	},
-	"moddoc-desc": "Gir LuaDoc-stil dokumentation for moduler"
+	"moddoc-desc": "Giver LDoc-stil dokumentation for moduler"
 }

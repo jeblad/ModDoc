@@ -4,5 +4,5 @@
 			"Kly"
 		]
 	},
-	"moddoc-desc": "提供用於模組的 LuaDoc 樣式文件"
+	"moddoc-desc": "提供用於模組的 LDoc 樣式 Lua 文件"
 }
