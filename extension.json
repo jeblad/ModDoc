@@ -21,7 +21,7 @@
 	"callback": "ModDoc\\Hooks::onExtensionSetup",
 	"Hooks": {
 		"ScribuntoExternalLibraryPaths": [
-			"ModDoc\\Hooks::onRegisterScribuntoExternalLibraryPaths"
+			"ModDoc\\Hooks::onScribuntoExternalLibraryPaths"
 		]
 	},
 	"MessagesDirs": {
