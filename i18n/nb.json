@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Jeblad"
+			"Jeblad",
+			"Jon Harald Søby"
 		]
 	},
-	"moddoc-desc": "Gir LuaDoc-stil dokumentasjon for moduler"
+	"moddoc-desc": "Gir Lua-dokumentasjon i LDoc-stil for moduler"
 }
