@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hamilton Abreu"
+		]
+	},
+	"moddoc-desc": "Fornece a documentação Lua no estilo LDoc para módulos"
+}
