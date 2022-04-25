@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"StarrySky"
+		]
+	},
+	"moddoc-desc": "为模块提供 LDoc 样式的 Lua 文档"
+}
