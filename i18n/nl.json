@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"moddoc-desc": "Voorziet in Lua-documentatie in LDoc-stijl voor modules"
+}
