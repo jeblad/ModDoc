@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Toliño"
+		]
+	},
+	"moddoc-desc": "Proporciona documentación de Lua para os módulos en formato LDoc"
+}
