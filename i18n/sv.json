@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Stefan2255"
+		]
+	},
+	"moddoc-desc": "Tillhandahåller Lua-dokumentation i LDoc-stil för moduler"
+}
