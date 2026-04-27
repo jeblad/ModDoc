@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Tensama0415"
+		]
+	},
+	"moddoc-desc": "모듈에 대한 Lua 문서를 LDoc 스타일로 제공합니다"
+}
