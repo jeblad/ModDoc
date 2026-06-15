@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wizzard"
+		]
+	},
+	"moddoc-desc": "Poskytuje dokumentáciu modulov Lua v štýle LDoc"
+}
